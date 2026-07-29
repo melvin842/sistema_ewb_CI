@@ -1,0 +1,359 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:white;
+}
+
+.login-container{
+    width:100%;
+    height:100 vh;
+    overflow:hidden;
+    display:flex;
+
+    background:white;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.2);
+}
+
+.login-banner{
+    width:50%;
+    position:relative;
+    overflow:hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.login-banner img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display: block;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.45);
+}
+
+.banner-content{
+    position:absolute;
+    left:30px;
+    bottom:60px;
+    color:white;
+    z-index:2;
+}
+
+.banner-content h2{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.banner-content p{
+    font-size:22px;
+}
+
+.login-form{
+    width:50%;
+    background:white;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    padding:40px;
+}
+
+.login-form h1{
+    color:#026432;
+    font-size:32px;
+    margin-bottom:20px;
+}
+
+.logo{
+    width:180px;
+     margin:0 auto 20px auto;
+    display:block;
+}
+
+form{
+    width:100%;
+    max-width:450px;
+}
+
+form label{
+    display:block;
+    color:#026432;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:10px;
+    margin-top:15px;
+}
+
+.input-box{
+    position:relative;
+}
+
+.input-box i{
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#666;
+}
+
+.input-box input{
+    width:100%;
+    height:55px;
+
+    border:1px solid #026432;
+    border-radius:4px;
+
+    padding-left:45px;
+
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    height:60px;
+
+    margin-top:35px;
+
+    border:none;
+
+    background:#026432;
+    color:white;
+
+    font-size:22px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    border-radius:4px;
+
+    transition:.3s;
+}
+
+button:hover{
+    background:#014d27;
+}
+
+/* =========================
+   ESTILOS DE MODALES/ALERTAS PARA LOGIN
+   Mismo diseño que el panel administrativo
+   (.modal-logout / UIAlert)
+   Agregar este archivo en login.html DESPUÉS de login.css
+========================= */
+
+.modal-logout,
+.ui-alert-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: .3s;
+
+    z-index: 9999;
+}
+
+.modal-logout.show,
+.ui-alert-overlay.show{
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content,
+.ui-alert-box{
+    background: white;
+    width: 400px;
+    max-width: 90%;
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+
+    animation: alertShow .25s ease;
+}
+
+@keyframes alertShow{
+    from{ transform: scale(.92); opacity: 0; }
+    to{   transform: scale(1);   opacity: 1; }
+}
+
+.modal-icon,
+.ui-alert-icon{
+    font-size: 60px;
+    color: #026432;
+    margin-bottom: 10px;
+}
+
+.ui-alert-icon.success{ color: #2e7d32; }
+.ui-alert-icon.error{   color: #e53935; }
+.ui-alert-icon.warning{ color: #b8860b; }
+
+.modal-content h2,
+.ui-alert-box h2{
+    color: #222;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.modal-content p,
+.ui-alert-box p{
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.modal-buttons,
+.ui-alert-buttons{
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-cancel,
+.btn-confirm,
+.ui-alert-btn{
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    transition: .3s;
+    font-family: inherit;
+}
+
+.btn-cancel,
+.ui-alert-btn.cancel{
+    background: #ff0000;
+    color: white;
+}
+
+.btn-cancel:hover,
+.ui-alert-btn.cancel:hover{
+    background: #bf0000;
+}
+
+.btn-confirm,
+.ui-alert-btn.ok{
+    background: #026432;
+    color: white;
+}
+
+.btn-confirm:hover,
+.ui-alert-btn.ok:hover{
+    background: #014d27;
+}
+
+/* Botón de confirmar en color rojo cuando es una acción peligrosa
+   (ej. UIAlert.confirm con danger:true) */
+.ui-alert-btn.ok.danger{
+    background: #e53935;
+}
+
+.ui-alert-btn.ok.danger:hover{
+    background: #c62828;
+}
+
+/* =========================
+   TOAST (esquina, para UIAlert.toast)
+========================= */
+
+.ui-toast{
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+
+    background: white;
+    color: #222;
+
+    padding: 14px 22px;
+    border-radius: 10px;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border-left: 5px solid #026432;
+
+    z-index: 10000;
+
+    animation: toastIn .3s ease;
+}
+
+@keyframes toastIn{
+    from{ transform: translateX(30px); opacity: 0; }
+    to{   transform: translateX(0);    opacity: 1; }
+}
+
+.ui-toast.success{ border-left-color: #2e7d32; }
+.ui-toast.error{   border-left-color: #e53935; }
+.ui-toast.warning{ border-left-color: #b8860b; }
+
+.ui-toast .material-symbols-outlined{
+    font-size: 20px;
+    color: #026432;
+}
+
+.ui-toast.success .material-symbols-outlined{ color: #2e7d32; }
+.ui-toast.error   .material-symbols-outlined{ color: #e53935; }
+.ui-toast.warning .material-symbols-outlined{ color: #b8860b; }
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width: 480px){
+
+    .modal-content,
+    .ui-alert-box{
+        width: 92%;
+        padding: 24px;
+    }
+
+    .ui-toast{
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+    }
+}
+
+@media(max-width:900px){
+
+    .login-banner{
+        display:none;
+    }
+
+    .login-form{
+        width:100%;
+    }
+}

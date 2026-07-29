@@ -1,0 +1,194 @@
+/* =========================
+        TARJETA DE PERFIL
+========================= */
+
+.perfil-card{
+    background:white;
+    border-radius:15px;
+    padding:35px;
+    margin-top:20px;
+    max-width:600px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+/* =========================
+        FOTO + CÁMARA
+========================= */
+
+.perfil-foto-wrap{
+    position:relative;
+    width:130px;
+    height:130px;
+    margin:0 auto 30px;
+}
+
+.perfil-foto-wrap img{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #026432;
+    background:#f3f3f3;
+}
+
+.btn-camara{
+    position:absolute;
+    bottom:0;
+    right:0;
+
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+    border:3px solid white;
+    background:#026432;
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+    transition:.2s;
+}
+
+.btn-camara:hover{
+    background:#014d27;
+}
+
+/* =========================
+        CAMPOS
+========================= */
+
+.campo{
+    margin-bottom:22px;
+}
+
+.campo label{
+    display:block;
+    font-size:13px;
+    color:#888;
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.campo-valor{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding-bottom:8px;
+    border-bottom:1px solid #eee;
+}
+
+.campo-texto{
+    flex:1;
+    font-size:16px;
+    color:#222;
+}
+
+.campo-input{
+    flex:1;
+    font-size:16px;
+    color:#222;
+    border:none;
+    outline:none;
+    padding:4px 0;
+    border-bottom:2px solid #026432;
+}
+
+.btn-editar-campo{
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:#8BC34A;
+    font-size:15px;
+    padding:6px;
+    border-radius:50%;
+    transition:.2s;
+}
+
+.btn-editar-campo:hover{
+    background:#f2f2f2;
+    color:#026432;
+}
+
+/* =========================
+        CAMPO CONTRASEÑA
+========================= */
+
+.campo-valor-password{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    border-bottom:none;
+}
+
+.campo-valor-password input{
+    padding:10px 12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:14px;
+    outline:none;
+}
+
+.campo-valor-password input:focus{
+    border-color:#026432;
+}
+
+/* =========================
+        MENSAJE / ACCIONES
+========================= */
+
+.mensaje-perfil{
+    font-size:14px;
+    margin-bottom:15px;
+    min-height:18px;
+}
+
+.mensaje-perfil.exito{ color:#2e7d32; }
+.mensaje-perfil.error{ color:#e53935; }
+
+.perfil-acciones{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-top:10px;
+}
+
+.btn-secundario{
+    background:none;
+    border:1px solid #ccc;
+    color:#555;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:.2s;
+}
+
+.btn-secundario:hover{
+    border-color:#026432;
+    color:#026432;
+}
+
+.btn-guardar{
+    background:#026432;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.btn-guardar:hover{
+    background:#014d27;
+}

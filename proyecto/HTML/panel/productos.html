@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Productos | Panel Administrativo</title>
+
+    <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
+    <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
+    <link rel="stylesheet" href="../../CSS/panel/productos.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="../../img/logo_ci_blanco.png" alt="">
+        </div>
+
+        <h3>Menú</h3>
+
+        <nav>
+
+            <a href="dashboard.html">
+                <span class="material-symbols-outlined">home</span>
+                Inicio
+            </a>
+
+            <a href="productos.html" class="active">
+                <span class="material-symbols-outlined">liquor</span>
+                Productos
+            </a>
+
+            <a href="recursos-humanos.html">
+                <span class="material-symbols-outlined">groups</span>
+                Recursos Humanos
+            </a>
+
+            <a href="noticias.html">
+                <span class="material-symbols-outlined">campaign</span>
+                Noticias
+            </a>
+
+            <a href="sugerencias.html">
+                <span class="material-symbols-outlined">markunread_mailbox</span>
+                Sugerencias
+            </a>
+
+        </nav>
+
+        <div class="logout">
+            <a href="#" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <main class="content">
+
+        <header class="topbar">
+            <h1>COMERCIALIZADORA EL INGENIO</h1>
+            
+            <div class="user-menu" id="userMenu">
+
+    <button class="user-btn" id="userBtn" type="button">
+        <i class="fa-solid fa-circle-user"></i>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-dropdown-header">
+            <strong id="userDropdownNombre">Usuario</strong>
+            <span id="userDropdownRol">--</span>
+        </div>
+
+        <a href="perfil.html?modo=ver">
+            <i class="fa-solid fa-id-card"></i> Ver Perfil
+        </a>
+
+        <a href="crear usuario.html" id="linkCrearUsuario" style="display:none;">
+            <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+        </a>
+
+    </div>
+
+</div>
+
+        </header>
+
+        <div class="section-header">
+            <h2>Administrar Productos</h2>
+        </div>
+
+        <!-- TARJETAS DE ESTADISTICAS -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <span class="material-symbols-outlined">liquor</span>
+                </div>
+                <div class="stat-info">
+                    <h3 id="statTotal">0</h3>
+                    <p>Totales</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon activo">
+                    <span class="material-symbols-outlined">check_circle</span>
+                </div>
+                <div class="stat-info">
+                    <h3 id="statActivos">0</h3>
+                    <p>Activos</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon inactivo">
+                    <span class="material-symbols-outlined">cancel</span>
+                </div>
+                <div class="stat-info">
+                    <h3 id="statInactivos">0</h3>
+                    <p>Inactivos</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- BARRA DE HERRAMIENTAS -->
+
+        <div class="toolbar">
+
+            <div class="toolbar-left">
+
+                <div class="search-box">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" id="buscarProducto" placeholder="Buscar Producto">
+                </div>
+
+                <select class="filter-select" id="filtroTipo">
+                    <option value="todos">Todos</option>
+                    <option value="comercial">Comercial</option>
+                    <option value="industrial">Industrial</option>
+                </select>
+
+                <select class="filter-select" id="filtroEstado">
+                    <option value="todos">Estado: Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+
+            </div>
+
+            <a href="agregar-productos.html" class="btn-add">
+                <i class="fa-solid fa-plus"></i>
+                Agregar Producto
+            </a>
+
+        </div>
+
+        <!-- TABLA -->
+
+        <div class="table-wrapper">
+            <div class="table-scroll">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Imagen</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaProductos">
+                        <!-- Filas generadas por JS -->
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <span class="material-symbols-outlined">inventory_2</span>
+                <p>No se encontraron productos.</p>
+            </div>
+
+            <div class="pagination" id="paginacion">
+                <!-- Generada por JS -->
+            </div>
+
+        </div>
+
+        <!-- MODAL CONFIRMAR ELIMINACION -->
+
+        <div class="modal-logout" id="modalEliminar">
+            <div class="modal-content">
+
+                <span class="material-symbols-outlined modal-icon">delete</span>
+
+                <h2>¿Eliminar este producto?</h2>
+                <p>Esta acción no se puede deshacer.</p>
+
+                <div class="modal-buttons">
+                    <button id="cancelEliminar" class="btn-cancel">Cancelar</button>
+                    <button id="confirmEliminar" class="btn-confirm">Eliminar</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MODAL CERRAR SESION -->
+
+        <div class="modal-logout" id="modalLogout">
+            <div class="modal-content">
+
+                <span class="material-symbols-outlined modal-icon">logout</span>
+
+                <h2>¿Desea salir del panel administrativo?</h2>
+                <p>Se cerrará la sesión actual del administrador.</p>
+
+                <div class="modal-buttons">
+                    <button id="cancelLogout" class="btn-cancel">Cancelar</button>
+                    <button id="confirmLogout" class="btn-confirm">Salir</button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../../JS/panel/control-acceso.js"></script>
+<script src="../../JS/panel/perfil'menu.js"></script>
+;<script src="../../JS/panel/alerts.js"></script>
+<script src="../../JS/panel/dashboard.js"></script>
+<script src="../../JS/panel/productos.js"></script>
+
+</body>
+</html>

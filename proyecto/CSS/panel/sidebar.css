@@ -1,0 +1,270 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f3f3f3;
+}
+
+.dashboard{
+    display:flex;
+    min-height:100vh;
+}
+
+/* =========================
+        SIDEBAR — FIJA
+========================= */
+
+.sidebar{
+    width:250px;
+    min-width:250px;        /* ✅ No se encoge nunca */
+    background:#026432;
+    color:white;
+
+    display:flex;
+    flex-direction:column;
+
+    /* ✅ Fija en pantalla mientras el contenido hace scroll */
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    overflow-y:auto;        /* Scroll interno si el menú es muy largo */
+    z-index:100;
+}
+
+.sidebar-logo{
+    text-align:center;
+    padding:20px;
+}
+
+.sidebar-logo img{
+    width:70px;
+}
+
+.sidebar h3{
+    padding:15px 20px;
+}
+
+.sidebar nav{
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar nav a{
+    color:white;
+    text-decoration:none;
+
+    padding:14px 20px;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    transition:.3s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active{
+    background:white;
+    color:#026432;
+}
+
+.sidebar .material-symbols-outlined{
+    font-size:20px;
+}
+
+.logout{
+    margin-top:auto;
+    padding:20px;
+}
+
+.logout a{
+    color:white;
+    text-decoration:none;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logout .material-symbols-outlined,
+.logout i{
+    font-size:20px;
+}
+
+/* =========================
+        CONTENIDO
+        Desplazado 250px para no
+        quedar detrás de la sidebar
+========================= */
+
+.content{
+    flex:1;
+    padding:25px;
+    margin-left:250px;      /* ✅ Mismo ancho que la sidebar */
+    min-height:100vh;
+}
+
+/* =========================
+        TOPBAR
+========================= */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+.topbar h1{
+    color:#111;
+    font-size:26px;
+}
+
+.user i{
+    font-size:45px;
+    color:#8BC34A;
+}
+
+/* =========================
+        MODALES (BASE)
+========================= */
+
+.modal-logout{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.3s;
+
+    z-index:9999;
+}
+
+.modal-logout.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.modal-content{
+    background:white;
+    width:400px;
+    max-width:90%;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.modal-icon{
+    font-size:60px;
+    color:#026432;
+    margin-bottom:10px;
+}
+
+.modal-content h2{
+    color:#222;
+    margin-bottom:10px;
+}
+
+.modal-content p{
+    color:#666;
+    margin-bottom:25px;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+}
+
+.btn-cancel,
+.btn-confirm{
+    padding:12px 25px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-cancel{
+    background:#ff0000;
+    color:white;
+}
+
+.btn-cancel:hover{
+    background:#bf0000;
+}
+
+.btn-confirm{
+    background:#026432;
+    color:white;
+}
+
+.btn-confirm:hover{
+    background:#014d27;
+}
+
+/* =========================
+        RESPONSIVE
+        En pantallas pequeñas la sidebar
+        se reduce solo en ancho pero
+        sigue siendo fija
+========================= */
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:70px;
+        min-width:70px;
+    }
+
+    .content{
+        margin-left:70px;
+    }
+
+    .sidebar h3{
+        display:none;
+    }
+
+    .sidebar nav a,
+    .logout a{
+        justify-content:center;
+        font-size:0;            /* Oculta el texto, deja el icono */
+        padding:14px 0;
+    }
+
+    .sidebar nav a .material-symbols-outlined,
+    .logout .material-symbols-outlined,
+    .logout i{
+        font-size:22px;
+    }
+}
+
+@media(max-width:700px){
+
+    .topbar h1{
+        font-size:18px;
+    }
+
+    .content{
+        padding:15px;
+    }
+}

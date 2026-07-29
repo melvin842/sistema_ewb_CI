@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Noticia | Panel Administrativo</title>
+
+    <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
+    <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
+    <link rel="stylesheet" href="../../CSS/panel/form-base.css">
+    <link rel="stylesheet" href="../../CSS/panel/noticia-form.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../../img/logo_ci_blanco.png" alt="">
+        </div>
+        <h3>Menú</h3>
+        <nav>
+            <a href="dashboard.html">
+                <span class="material-symbols-outlined">home</span>Inicio
+            </a>
+            <a href="productos.html">
+                <span class="material-symbols-outlined">liquor</span>Productos
+            </a>
+            <a href="recursos-humanos.html">
+                <span class="material-symbols-outlined">groups</span>Recursos Humanos
+            </a>
+            <a href="noticias.html" class="active">
+                <span class="material-symbols-outlined">campaign</span>Noticias
+            </a>
+            <a href="sugerencias.html">
+                <span class="material-symbols-outlined">markunread_mailbox</span>Sugerencias
+            </a>
+        </nav>
+        <div class="logout">
+            <a href="#" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="content">
+
+        <header class="topbar">
+            <h1>COMERCIALIZADORA EL INGENIO</h1>
+        
+            <div class="user-menu" id="userMenu">
+    <button class="user-btn" id="userBtn" type="button">
+        <i class="fa-solid fa-circle-user"></i>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-dropdown-header">
+            <strong id="userDropdownNombre">Usuario</strong>
+            <span id="userDropdownRol">--</span>
+        </div>
+
+        <a href="perfil.html?modo=ver">
+            <i class="fa-solid fa-id-card"></i> Ver Perfil
+        </a>
+
+        <a href="crear usuario.html" id="linkCrearUsuario" style="display:none;">
+            <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+        </a>
+
+    </div>
+
+</div>
+</header> 
+        <div class="section-header">
+            <a href="noticias.html" class="btn-back">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h2 id="tituloFormulario">Agregar Noticia</h2>
+        </div>
+
+        <form class="form-container" id="formNoticia">
+
+            <div class="form-grid noticia-grid">
+
+                <!-- ── VISTA PREVIA ── col 1, filas 1-2 ── -->
+                <div class="preview-wrapper noticia-preview">
+
+                    <h4>Vista Previa</h4>
+
+                    <div class="preview-card" id="previewCard">
+
+                        <img src="" id="previewImg" alt=""
+                             style="display:none;">
+
+                        <div class="preview-info">
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                                <span class="preview-badge badge-noticia" id="previewBadge">Noticia</span>
+                                <span class="preview-date" id="previewFecha">—</span>
+                            </div>
+                            <h3 id="previewTitulo">Título de la noticia</h3>
+                            <p id="previewContenido">Aquí se mostrará un extracto del contenido...</p>
+                            <a href="#" class="preview-link" onclick="return false;">Leer más</a>
+                        </div>
+
+                    </div>
+
+                </div><!-- /.preview-wrapper -->
+
+                <!-- ── IMAGEN PRINCIPAL + GALERÍA ── col 2, fila 1 ── -->
+                <div class="imagen-box">
+
+                    <h4>Imagen Principal</h4>
+
+                    <div class="imagen-principal" id="imagenPrincipal">
+                        <span class="material-symbols-outlined placeholder">add_photo_alternate</span>
+                        <input type="file" id="inputImagenPrincipal" accept="image/*">
+                    </div>
+                    <span class="hint" style="text-align:center; display:block; margin-top:6px;">
+                        Si no se selecciona imagen, se usará el logo de la empresa.
+                    </span>
+
+                    <h4 style="margin-top:20px;">Galería Adicional</h4>
+                    <div class="galeria-extra" id="galeriaExtra">
+                        <div class="agregar-imagenes" id="triggerGaleria">
+                            <span class="material-symbols-outlined">add_photo_alternate</span>
+                            <span>Agregar Imágenes</span>
+                            <input type="file" id="inputGaleria" accept="image/*" multiple style="display:none;">
+                        </div>
+                    </div>
+                    <span class="hint" style="text-align:center; display:block; margin-top:6px;">
+                        Imágenes adicionales (máx. 5). Se muestran en el modal con flechas.
+                    </span>
+
+                </div>
+
+                <!-- ── CAMPOS DEL FORMULARIO ── col 2, fila 2 ── -->
+                <div class="form-fields">
+
+                    <!-- Tipo y Categoría -->
+                    <div class="form-row">
+
+                        <div class="input-group">
+                            <label for="tipo">Tipo <span style="color:#e53935">*</span></label>
+                            <select id="tipo" required>
+                                <option value="noticia">Noticia</option>
+                                <option value="aviso">Aviso</option>
+                                <option value="comunicado">Comunicado</option>
+                                <option value="alerta">Alerta</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="categoria">Categoría <span style="color:#e53935">*</span></label>
+                            <select id="categoria" required>
+                                <option value="">Selecciona una categoría</option>
+                                <option value="Empresa">Empresa</option>
+                                <option value="Productos">Productos</option>
+                                <option value="Recursos Humanos">Recursos Humanos</option>
+                                <option value="Seguridad">Seguridad</option>
+                                <option value="Calidad">Calidad</option>
+                                <option value="Eventos">Eventos</option>
+                                <option value="Promociones">Promociones</option>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+
+                    </div><!-- /.form-row -->
+
+                    <!-- Título -->
+                    <div class="input-group">
+                        <label for="titulo">Título <span style="color:#e53935">*</span></label>
+                        <input type="text" id="titulo" required maxlength="150"
+                               placeholder="Ej. Modernización de procesos operativos">
+                    </div>
+
+                    <!-- Fecha de publicación -->
+                    <div class="input-group">
+                        <label for="fechaPublicacion">Fecha de Publicación</label>
+                        <input type="date" id="fechaPublicacion">
+                        <span class="hint">Se toma la fecha de hoy si se deja vacío.</span>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="input-group">
+                        <label for="contenido">Contenido <span style="color:#e53935">*</span></label>
+                        <textarea id="contenido" class="tall" required
+                                  placeholder="Escribe el contenido completo de la noticia, aviso, comunicado o alerta."></textarea>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="estado-group">
+                        <label class="titulo">Visibilidad</label>
+                        <div class="estado-opciones">
+
+                            <label class="estado-opcion activo">
+                                <input type="radio" name="estado" value="activo" checked>
+                                <span class="dot"></span>
+                                Publicada
+                            </label>
+
+                            <label class="estado-opcion inactivo">
+                                <input type="radio" name="estado" value="oculta">
+                                <span class="dot"></span>
+                                Oculta
+                            </label>
+
+                        </div>
+                    </div>
+
+                </div><!-- /.form-fields -->
+
+            </div><!-- /.form-grid -->
+
+            <div class="form-actions">
+                <a href="noticias.html" class="btn-cancelar">
+                    <span class="material-symbols-outlined">close</span>
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-guardar" id="btnGuardar">
+                    <span class="material-symbols-outlined">add</span>
+                    Agregar
+                </button>
+            </div>
+
+        </form>
+
+        <!-- MODAL CERRAR SESIÓN -->
+        <div class="modal-logout" id="modalLogout">
+            <div class="modal-content">
+                <span class="material-symbols-outlined modal-icon">logout</span>
+                <h2>¿Desea salir del panel administrativo?</h2>
+                <p>Se cerrará la sesión actual del administrador.</p>
+                <div class="modal-buttons">
+                    <button id="cancelLogout" class="btn-cancel">Cancelar</button>
+                    <button id="confirmLogout" class="btn-confirm">Salir</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="../../JS/panel/alerts.js"></script>
+<script src="../../JS/panel/control-acceso.js"></script>
+<script src="../../JS/panel/perfil'menu.js"></script>
+<script src="../../JS/panel/dashboard.js"></script>
+<script src="../../JS/panel/form-utils.js"></script>
+<script src="../../JS/panel/noticia-form.js"></script>
+
+</body>
+</html>

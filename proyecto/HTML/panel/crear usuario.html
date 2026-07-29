@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario | Panel Administrativo</title>
+
+    <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
+    <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
+    <link rel="stylesheet" href="../../CSS/panel/dashboard.css">
+    <link rel="stylesheet" href="../../CSS/panel/perfil.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../../img/logo_ci_blanco.png" alt="">
+        </div>
+        <h3>Menú</h3>
+        <nav>
+            <a href="../../HTML/panel/dashboard.html">
+                <span class="material-symbols-outlined">home</span> Inicio
+            </a>
+            <a href="../../HTML/panel/productos.html">
+                <span class="material-symbols-outlined">liquor</span> Productos
+            </a>
+            <a href="../../HTML/panel/recursos-humanos.html">
+                <span class="material-symbols-outlined">groups</span> Recursos Humanos
+            </a>
+            <a href="../../HTML/panel/noticias.html">
+                <span class="material-symbols-outlined">campaign</span> Noticias
+            </a>
+            <a href="../../HTML/panel/sugerencias.html">
+                <span class="material-symbols-outlined">markunread_mailbox</span> Sugerencias
+            </a>
+        </nav>
+        <div class="logout">
+            <a href="#" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+
+        <header class="topbar">
+            <h1>CREAR NUEVO USUARIO</h1>
+
+            <div class="user-menu" id="userMenu">
+                <button class="user-btn" id="userBtn" type="button">
+                    <i class="fa-solid fa-circle-user"></i>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <strong id="userDropdownNombre">Usuario</strong>
+                        <span id="userDropdownRol">--</span>
+                    </div>
+                    <a href="perfil.html?modo=ver"><i class="fa-solid fa-id-card"></i> Ver Perfil</a>
+                    <a href="crear usuario.html" id="linkCrearUsuario" style="display:none;">
+                        <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section class="perfil-card">
+
+            <form id="formCrearUsuario">
+
+                <div class="campo">
+                    <label>Nombre de usuario</label>
+                    <div class="campo-valor">
+                        <input type="text" class="campo-input" id="nuevoNombre" required>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Nombre completo</label>
+                    <div class="campo-valor">
+                        <input type="text" class="campo-input" id="nuevoNombreCompleto" required>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Correo</label>
+                    <div class="campo-valor">
+                        <input type="email" class="campo-input" id="nuevoCorreo" required>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Contraseña</label>
+                    <div class="campo-valor">
+                        <input type="password" class="campo-input" id="nuevaContrasena" required>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Rol</label>
+                    <div class="campo-valor">
+                        <select id="nuevoRol" class="campo-input">
+                            <option value="editor">Editor</option>
+                            <option value="rh">Recursos Humanos</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p id="mensajeCrear" class="mensaje-perfil"></p>
+
+                <div class="perfil-acciones">
+                    <button type="submit" class="btn-guardar">Crear Usuario</button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="../../JS/panel/control-acceso.js"></script>
+<script src="../../JS/panel/alerts.js"></script>
+<script src="../../JS/panel/perfil'menu.js"></script>
+<script src="../../JS/panel/crear usuario.js"></script>
+
+</body>
+</html>

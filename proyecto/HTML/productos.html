@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Productos | Comercializadora El Ingenio</title>
+
+    <link rel="stylesheet" href="../CSS/productos.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"/>
+
+</head>
+
+<body>
+
+<!-- =========================
+        HEADER
+========================= -->
+
+<header class="header">
+
+    <div class="logo">
+        <img src="../img/logo_ci 2.png" alt="Logo">
+    </div>
+
+    <h1 class="titulo-header">
+        COMERCIALIZADORA EL INGENIO
+    </h1>
+
+    <nav class="navbar">
+
+        <a href="index.html">
+            <span class="material-symbols-outlined">home</span>
+            Inicio
+        </a>
+
+        <a href="../HTML/productos.html" class="active">
+            <span class="material-symbols-outlined">liquor</span>
+            Productos
+        </a>
+
+        <a href="../HTML/recursos-humanos.html">
+            <span class="material-symbols-outlined">groups</span>
+            Recursos Humanos
+        </a>
+
+        <a href="../HTML/noticias.html">
+            <span class="material-symbols-outlined">campaign</span>
+            Noticias
+        </a>
+
+        <a href="../HTML/sugerencias.html">
+            <span class="material-symbols-outlined">markunread_mailbox</span>
+            Sugerencias
+        </a>
+
+    </nav>
+
+</header>
+
+<!-- =========================
+        BANNER
+========================= -->
+
+<section class="banner">
+
+    <div class="overlay"></div>
+
+    <img src="../img/banner_productos.png" alt="Banner">
+
+    <div class="banner-content">
+        <h1>Nuestros Productos</h1>
+        <p>Calidad industrial derivada de la caña de azúcar</p>
+    </div>
+
+</section>
+
+<!-- =========================
+        RELACIÓN INDUSTRIAL
+========================= -->
+
+<section class="alliance">
+
+    <div class="section-title">
+        <span>RELACIÓN INDUSTRIAL</span>
+        <h2>Productos asociados al sector alcoholero</h2>
+    </div>
+
+    <div class="alliance-container">
+
+        <div class="alliance-gallery">
+            <img src="../img/021.png" alt="">
+            <img src="../img/logo_ci 3.png" alt="">
+        </div>
+
+        <div class="alliance-content">
+
+            <h3>
+                Comercializadora El Ingenio y
+                Alcoholera Zapopan
+            </h3>
+
+            <p>
+                Comercializadora El Ingenio mantiene relación
+                con el sector industrial alcoholero mediante
+                productos derivados de la caña de azúcar y
+                procesos asociados a Alcoholera Zapopan.
+            </p>
+
+            <p>
+                Los productos comercializados forman parte
+                de aplicaciones industriales, sanitarias y
+                comerciales dentro del mercado nacional.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+        PRODUCTOS
+        Las cards se generan dinámicamente
+        desde el backend (productos-publico.js)
+========================= -->
+
+<section class="products">
+
+    <div class="section-title">
+        <span>Catálogo Industrial</span>
+        <h2>Productos que manejamos</h2>
+    </div>
+
+    <!--
+        Este div es el contenedor de las cards.
+        productos-publico.js lo llena con los productos
+        activos del backend al cargar la página.
+        Si se agregan, editan o desactivan productos
+        desde el panel admin, aquí se reflejan al recargar.
+    -->
+    <div class="product-container" id="productContainer">
+        <!-- Cargando... -->
+    </div>
+
+</section>
+
+<!-- =========================
+        MODAL DE PRODUCTO
+        El JS lo rellena con los datos de
+        la card que el usuario haya abierto.
+========================= -->
+
+<div class="modal" id="productModal">
+
+    <div class="modal-content">
+
+        <span class="close-modal">&times;</span>
+
+        <div class="modal-slider">
+
+            <button class="slider-btn prev">&#10094;</button>
+
+            <img src="" id="modalImage" alt="">
+
+            <div class="image-caption" id="imageCaption"></div>
+
+            <button class="slider-btn next">&#10095;</button>
+
+        </div>
+
+        <div class="thumbnails" id="thumbnails"></div>
+
+        <div class="modal-info">
+            <h2 id="modalTitle"></h2>
+            <div id="modalDescription"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+        BENEFICIOS
+========================= -->
+
+<section class="benefits-product">
+
+    <div class="section-title">
+        <span>VENTAJAS</span>
+        <h2>Beneficios de Nuestros Productos</h2>
+    </div>
+
+    <div class="benefits-product-container">
+
+        <div class="benefit-product-card">
+            <span class="material-symbols-outlined">workspace_premium</span>
+            <h3>Alta Pureza</h3>
+            <p>Productos elaborados bajo altos estándares de calidad para garantizar un excelente desempeño.</p>
+        </div>
+
+        <div class="benefit-product-card">
+            <span class="material-symbols-outlined">hub</span>
+            <h3>Versatilidad</h3>
+            <p>Aplicable en industrias farmacéuticas, cosméticas, alimentarias e industriales.</p>
+        </div>
+
+        <div class="benefit-product-card">
+            <span class="material-symbols-outlined">done</span>
+            <h3>Calidad Garantizada</h3>
+            <p>Control de calidad constante para cumplir con las especificaciones requeridas.</p>
+        </div>
+
+        <div class="benefit-product-card">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <h3>Diferentes Presentaciones</h3>
+            <p>Disponibilidad en distintas capacidades para adaptarse a cada necesidad.</p>
+        </div>
+
+        <div class="benefit-product-card">
+            <span class="material-symbols-outlined">local_shipping</span>
+            <h3>Distribución Eficiente</h3>
+            <p>Atención oportuna y suministro confiable para nuestros clientes.</p>
+        </div>
+
+        <div class="benefit-product-card">
+            <span class="material-symbols-outlined">check_circle</span>
+            <h3>Confianza y Experiencia</h3>
+            <p>Respaldo de una empresa comprometida con la calidad y el servicio.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+        FOOTER
+========================= -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-box">
+            <h3>Comercializadora El Ingenio</h3>
+            <p>
+                Empresa mexicana enfocada en la producción y comercialización
+                de derivados de la caña de azúcar, integrando innovación,
+                calidad y compromiso con la industria.
+            </p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Contacto</h3>
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Carretera Córdoba – Paso del Macho Km 8,
+                Potrero Nuevo, Municipio de Atoyac, Veracruz, México.
+            </p>
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                273 734 4050
+            </p>
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                asistencia@comercializadoraelingenio.com
+            </p>
+        </div>
+
+    </div>
+
+    <div class="footer-social">
+        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+
+    <div class="footer-copy">
+        <p>© 2026 Comercializadora El Ingenio | Todos los derechos reservados</p>
+    </div>
+
+</footer>
+
+<script src="../JS/productos.js"></script>
+
+
+</body>
+</html>

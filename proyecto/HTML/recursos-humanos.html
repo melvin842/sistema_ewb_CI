@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos Humanos | Comercializadora El Ingenio</title>
+    <link rel="stylesheet" href="../CSS/recursos-humanos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+
+<body>
+
+<!-- =========================
+        HEADER
+========================= -->
+<header class="header">
+    <div class="logo">
+        <img src="../img/logo_ci 2.png" alt="Logo">
+    </div>
+    <h1 class="titulo-header">COMERCIALIZADORA EL INGENIO</h1>
+    <nav class="navbar">
+        <a href="index.html">
+            <span class="material-symbols-outlined">home</span>
+            Inicio
+        </a>
+        <a href="../HTML/productos.html">
+            <span class="material-symbols-outlined">liquor</span>
+            Productos
+        </a>
+        <a href="recursos-humanos.html" class="active">
+            <span class="material-symbols-outlined">groups</span>
+            Recursos Humanos
+        </a>
+        <a href="../HTML/noticias.html">
+            <span class="material-symbols-outlined">campaign</span>
+            Noticias
+        </a>
+        <a href="../HTML/sugerencias.html">
+            <span class="material-symbols-outlined">markunread_mailbox</span>
+            Sugerencias
+        </a>
+    </nav>
+</header>
+
+<!-- =========================
+        BANNER
+========================= -->
+<section class="banner">
+    <div class="overlay"></div>
+    <img src="../img/banner_rh.png" alt="Banner">
+    <div class="banner-content">
+        <h1>Recursos Humanos</h1>
+        <p>Nuestro equipo humano es el motor que impulsa el crecimiento y la excelencia de la organización.</p>
+    </div>
+</section>
+
+<!-- =========================
+    ¿POR QUÉ TRABAJAR CON NOSOTROS?
+========================= -->
+<section class="work-with-us">
+    <div class="section-title">
+        <span>RECURSOS HUMANOS</span>
+        <h2>¿Por qué trabajar con nosotros?</h2>
+    </div>
+    <div class="work-container">
+        <div class="work-card">
+            <span class="material-symbols-outlined">trending_up</span>
+            <h3>Desarrollo Profesional</h3>
+            <p>Impulsamos el crecimiento de nuestros colaboradores mediante aprendizaje continuo y experiencia práctica.</p>
+        </div>
+        <div class="work-card">
+            <span class="material-symbols-outlined">school</span>
+            <h3>Capacitación Continua</h3>
+            <p>Promovemos la actualización constante para fortalecer conocimientos y habilidades laborales.</p>
+        </div>
+        <div class="work-card">
+            <span class="material-symbols-outlined">diversity_3</span>
+            <h3>Trabajo en Equipo</h3>
+            <p>Fomentamos un ambiente colaborativo basado en el respeto, la comunicación y el compromiso.</p>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+    NUESTRAS INSTALACIONES
+========================= -->
+<section class="facilities">
+    <div class="section-title">
+        <span>INSTALACIONES</span>
+        <h2>Nuestras Instalaciones</h2>
+    </div>
+    <div class="facilities-container">
+        <div class="facilities-gallery">
+            <img src="../img/025.jpg" alt="">
+            <img src="../img/026.jpg" alt="">
+            <img src="../img/027.jpg" alt="">
+            <img src="../img/012.jpg" alt="">
+            <img src="../img/018.jpg" alt="">
+            <img src="../img/022.png" alt="">
+        </div>
+        <div class="facilities-content">
+            <h3>Espacios diseñados para el desarrollo de nuestras actividades</h3>
+            <p>Contamos con instalaciones adecuadas para las actividades administrativas y operativas de la empresa, promoviendo condiciones de trabajo seguras y eficientes.</p>
+            <p>Nuestro entorno laboral está orientado a la productividad, la organización y el bienestar de nuestros colaboradores.</p>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+    OPORTUNIDADES LABORALES
+    ✅ Las cards se generan dinámicamente desde la BD
+========================= -->
+<section class="vacancies">
+
+    <div class="section-title">
+        <span>OPORTUNIDADES</span>
+        <h2>Oportunidades Laborales</h2>
+    </div>
+
+    <!-- ✅ Contenedor dinámico — el JS lo llena desde el backend -->
+    <div class="vacancies-container" id="vacanciesContainer">
+        <!-- Cargando... -->
+    </div>
+
+</section>
+
+<!-- =========================
+     MODAL VACANTE
+========================= -->
+<div class="modal-rh" id="modalRH">
+    <div class="modal-rh-content">
+
+        <span class="close-modal-rh">&times;</span>
+
+        <div class="modal-rh-img">
+            <img src="" id="rhModalImg" alt="">
+        </div>
+
+        <div class="modal-rh-info">
+
+            <h2 id="rhModalTitulo"></h2>
+            <p class="rh-fecha" id="rhModalFecha"></p>
+            <p class="rh-descripcion" id="rhModalDescripcion"></p>
+
+            <div class="rh-seccion" id="rhRequisitosBox">
+                <h3><span class="material-symbols-outlined">checklist</span> Requisitos</h3>
+                <div id="rhModalRequisitos"></div>
+            </div>
+
+            <div class="rh-seccion" id="rhHorarioBox">
+                <h3><span class="material-symbols-outlined">schedule</span> Horario</h3>
+                <p id="rhModalHorario"></p>
+            </div>
+
+            <div class="rh-seccion" id="rhSalarioBox">
+                <h3><span class="material-symbols-outlined">payments</span> Salario</h3>
+                <p id="rhModalSalario"></p>
+            </div>
+
+            <div class="rh-seccion" id="rhOfrecemosBox">
+                <h3><span class="material-symbols-outlined">volunteer_activism</span> Ofrecemos</h3>
+                <div id="rhModalOfrecemos"></div>
+            </div>
+
+            <div class="rh-estado" id="rhModalEstado"></div>
+
+            <p class="rh-contacto">Interesados comunicarse a</p>
+
+            <div class="rh-btns">
+                <a href="https://wa.me/522737344050" target="_blank" class="btn-rh btn-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="mailto:asistencia@comercializadoraelingenio.com" class="btn-rh btn-gmail">
+                    <i class="fa-solid fa-envelope"></i> Gmail
+                </a>
+                <button type="button" id="btnPostularme" class="btn-rh btn-postular">
+                    <span class="material-symbols-outlined">work</span> Postularme
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- =========================
+     MODAL POSTULACIÓN
+========================= -->
+<div class="modal-rh" id="modalPostulacion">
+    <div class="modal-rh-content modal-post-content">
+
+        <span class="close-modal-rh" id="closeModalPost">&times;</span>
+
+        <div class="post-header">
+            <span class="material-symbols-outlined">work</span>
+            <div>
+                <p class="post-subtitulo">Postulación para</p>
+                <h2 id="postTituloVacante">Nombre del puesto</h2>
+            </div>
+        </div>
+
+        <div class="modal-rh-info">
+
+            <p id="postError" class="post-error" style="display:none;"></p>
+
+            <form id="formPostulacion" novalidate>
+
+                <div class="post-group">
+                    <label for="postNombre">
+                        <span class="material-symbols-outlined">person</span>
+                        Nombre completo <span class="req">*</span>
+                    </label>
+                    <input type="text" id="postNombre" placeholder="Ej. Juan Pérez López" maxlength="100" required>
+                </div>
+
+                <div class="post-group">
+                    <label for="postCorreo">
+                        <span class="material-symbols-outlined">mail</span>
+                        Correo electrónico <span class="req">*</span>
+                    </label>
+                    <input type="email" id="postCorreo" placeholder="correo@ejemplo.com" maxlength="100" required>
+                </div>
+
+                <div class="post-group">
+                    <label for="postTelefono">
+                        <span class="material-symbols-outlined">phone</span>
+                        Teléfono <span class="opcional">(opcional)</span>
+                    </label>
+                    <input type="tel" id="postTelefono" placeholder="Ej. 272 123 4567" maxlength="20">
+                </div>
+
+                <div class="post-group">
+                    <label>
+                        <span class="material-symbols-outlined">attach_file</span>
+                        Currículum vitae <span class="req">*</span>
+                    </label>
+                    <label class="cv-upload" id="cvLabel" for="postCV">
+                        <span class="material-symbols-outlined">upload_file</span>
+                        <span>Seleccionar archivo</span>
+                        <small>Solo PDF · Máx. 5 MB</small>
+                        <input type="file" id="postCV" accept=".pdf,application/pdf" required>
+                    </label>
+                    <p class="cv-nombre" id="cvNombre">Ningún archivo seleccionado</p>
+                </div>
+
+                <p class="post-aviso">
+                    <span class="material-symbols-outlined">info</span>
+                    Tus datos serán utilizados únicamente para el proceso de selección.
+                </p>
+
+                <div class="rh-btns" style="margin-top:20px;">
+                    <button type="button" class="btn-rh btn-cancelar-post" id="closeModalPost2">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-rh btn-postular" id="btnEnviarPost">
+                        <span class="material-symbols-outlined">send</span>
+                        Enviar Postulación
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- =========================
+    CULTURA ORGANIZACIONAL
+========================= -->
+<section class="culture">
+    <div class="section-title">
+        <span>NUESTROS VALORES</span>
+        <h2>Cultura Organizacional</h2>
+    </div>
+    <div class="culture-container">
+        <div class="culture-card">
+            <span class="material-symbols-outlined">handshake</span>
+            <h3>Compromiso</h3>
+        </div>
+        <div class="culture-card">
+            <span class="material-symbols-outlined">verified_user</span>
+            <h3>Integridad</h3>
+        </div>
+        <div class="culture-card">
+            <span class="material-symbols-outlined">military_tech</span>
+            <h3>Liderazgo</h3>
+        </div>
+        <div class="culture-card">
+            <span class="material-symbols-outlined">lightbulb</span>
+            <h3>Innovación</h3>
+        </div>
+        <div class="culture-card">
+            <span class="material-symbols-outlined">assignment_turned_in</span>
+            <h3>Responsabilidad</h3>
+        </div>
+        <div class="culture-card">
+            <span class="material-symbols-outlined">security</span>
+            <h3>Seguridad</h3>
+        </div>
+    </div>
+</section>
+
+
+<!-- =========================
+        FOOTER
+========================= -->
+<footer class="footer">
+    <div class="footer-container">
+
+        <div class="footer-box">
+            <h3>Comercializadora El Ingenio</h3>
+            <p>Empresa mexicana enfocada en la producción y comercialización de derivados de la caña de azúcar, integrando innovación, calidad y compromiso con la industria.</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Contacto</h3>
+            <p><i class="fa-solid fa-location-dot"></i> Carretera Córdoba – Paso del Macho Km 8, Potrero Nuevo, Municipio de Atoyac, Veracruz, México.</p>
+            <p><i class="fa-solid fa-phone"></i> 273 734 4050</p>
+            <p><i class="fa-solid fa-envelope"></i> asistencia@comercializadoraelingenio.com</p>
+        </div>
+
+    </div>
+
+    <div class="footer-social">
+        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+
+    <div class="footer-copy">
+        <p>© 2026 Comercializadora El Ingenio | Todos los derechos reservados</p>
+    </div>
+</footer>
+
+
+<script src="../JS/panel/alerts.js"></script>
+<script src="../JS/recursos-humanos.js"></script>
+
+
+</body>
+</html>

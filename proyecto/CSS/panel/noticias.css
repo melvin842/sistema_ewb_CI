@@ -1,0 +1,1033 @@
+/* =========================
+   ESTE ARCHIVO REQUIERE sidebar.css
+========================= */
+
+/* =========================
+        LAYOUT GENERAL
+========================= */
+
+.noticias-layout{
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 25px;
+    align-items: stretch; /* 👈 iguala el alto de ambas columnas */
+
+    margin-top: 20px;
+    height: calc(100vh - 140px); /* ajusta 140px según el alto real de tu topbar */
+}
+
+.noticias-main{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 10px; /* deja espacio para que la barra no tape las cards */
+}
+
+/* =========================
+        TITULO SECCION
+========================= */
+
+.section-header{
+    margin-bottom: 18px;
+}
+
+.section-header h2{
+    font-size: 32px;
+    color: #026432;
+}
+
+/* =========================
+        STATS
+========================= */
+
+.stats{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card{
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,.07);
+}
+
+.stat-icon{
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon .material-symbols-outlined{
+    font-size: 24px;
+}
+
+.stat-icon.total{ background:#E1F0E8; color:#026432; }
+.stat-icon.activo{ background:#E6F4EA; color:#2e7d32; }
+.stat-icon.inactivo{ background:#F0F0F0; color:#666; }
+.stat-icon.alerta{ background:#FCE8E6; color:#e53935; }
+
+.stat-info h3{
+    font-size: 24px;
+    color: #111;
+    line-height: 1;
+}
+
+.stat-info p{
+    color: #888;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+/* =========================
+        BARRA DE HERRAMIENTAS
+========================= */
+
+.toolbar{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.toolbar-left{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+}
+
+.search-box{
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 280px;
+}
+
+.search-box .material-symbols-outlined{
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 18px;
+}
+
+.search-box input{
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    background: white;
+    transition: .3s;
+}
+
+.search-box input:focus{
+    border-color: #026432;
+}
+
+.filter-select{
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+}
+
+.filter-select:focus{
+    border-color: #026432;
+}
+
+.btn-add{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: #026432;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 10px 20px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: .3s;
+
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-add:hover{
+    background: #014d27;
+}
+
+/* =========================
+        GRID DE CARDS
+========================= */
+
+.news-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.news-card-admin{
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    transition: .3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card-admin:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+
+/* IMAGEN */
+
+.news-card-admin .card-img{
+    position: relative;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.news-card-admin .card-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* BADGE SOBRE IMAGEN */
+
+.news-card-admin .card-img .card-badge{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-noticia{ background:#E1F0E8; color:#026432; }
+.badge-aviso{ background:#ffc400; color:#fff; }
+.badge-comunicado{ background:#004085; color:#fff; }
+.badge-alerta{ background:#ff0019; color:#fff; }
+
+/* ESTADO SOBRE IMAGEN */
+
+.news-card-admin .card-img .card-estado{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.card-estado.publicada{ background:rgba(46,125,50,.85); color:#fff; }
+.card-estado.oculta{ background:rgba(100,100,100,.75); color:#fff; }
+
+/* CUERPO */
+
+.news-card-admin .card-body{
+    padding: 14px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.news-card-admin .card-date{
+    font-size: 12px;
+    color: #999;
+}
+
+.news-card-admin .card-titulo{
+    font-size: 15px;
+    font-weight: bold;
+    color: #111;
+    line-height: 1.3;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-card-admin .card-extracto{
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    flex: 1;
+}
+
+/* ACCIONES */
+
+.news-card-admin .card-acciones{
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px 14px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.news-card-admin .card-acciones button,
+.news-card-admin .card-acciones a{
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+    text-decoration: none;
+}
+
+.news-card-admin .card-acciones .btn-editar{
+    background: #e7ffe8;
+    color: #2e7d32;
+}
+
+.news-card-admin .card-acciones .btn-editar:hover{
+    background: #2e7d32;
+    color: white;
+}
+
+.news-card-admin .card-acciones .btn-eliminar{
+    background: #FCE8E6;
+    color: #e53935;
+}
+
+.news-card-admin .card-acciones .btn-eliminar:hover{
+    background: #e53935;
+    color: white;
+}
+
+.news-card-admin .card-acciones .material-symbols-outlined{
+    font-size: 16px;
+}
+
+/* =========================
+        PAGINACION
+========================= */
+
+.pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0 20px;
+}
+
+.pagination button{
+    border: none;
+    background: #f3f3f3;
+    color: #333;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: .3s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination button.active{
+    background: #026432;
+    color: white;
+}
+
+.pagination button:hover:not(.active){
+    background: #e0e0e0;
+}
+
+/* =========================
+        ESTADO VACIO
+========================= */
+
+.empty-state{
+    text-align: center;
+    padding: 50px 20px;
+    color: #999;
+    background: white;
+    border-radius: 16px;
+}
+
+.empty-state .material-symbols-outlined{
+    font-size: 55px;
+    display: block;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+/* =========================
+        PANEL DE CLIMA
+========================= */
+
+.clima-panel{
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+
+    height: 100%;
+    overflow-y: auto; /* 👈 scroll propio en vez de "sticky" */
+}
+
+.clima-header{
+    background: #026432;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 16px 20px;
+}
+
+.clima-header .material-symbols-outlined{
+    font-size: 24px;
+}
+
+.clima-header h3{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* HOY */
+
+.clima-hoy{
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.clima-loading{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 0;
+    color: #999;
+}
+
+.clima-loading .material-symbols-outlined{
+    font-size: 36px;
+    color: #026432;
+}
+
+.clima-loading p{
+    font-size: 14px;
+}
+
+@keyframes spin{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+}
+
+.spin{
+    animation: spin 1.2s linear infinite;
+}
+
+.clima-hoy-top{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.clima-hoy-top img{
+    width: 64px;
+    height: 64px;
+}
+
+.clima-temp{
+    display: block;
+    font-size: 36px;
+    font-weight: bold;
+    color: #111;
+    line-height: 1;
+}
+
+.clima-desc{
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+    text-transform: capitalize;
+}
+
+.clima-detalles{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.clima-detalle-item{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.clima-detalle-item .material-symbols-outlined{
+    font-size: 20px;
+    color: #026432;
+}
+
+.clima-detalle-item .label{
+    display: block;
+    font-size: 11px;
+    color: #999;
+    line-height: 1;
+}
+
+.clima-detalle-item span:last-child{
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ALERTA DE TORMENTA */
+
+.clima-alerta{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    background: #fff3cd;
+    border: 1px solid #ffc400;
+    border-radius: 12px;
+
+    padding: 12px 14px;
+    margin-top: 14px;
+}
+
+.clima-alerta .material-symbols-outlined{
+    font-size: 24px;
+    color: #b8860b;
+    flex-shrink: 0;
+}
+
+.clima-alerta strong{
+    display: block;
+    font-size: 13px;
+    color: #7a5c00;
+    margin-bottom: 3px;
+}
+
+.clima-alerta p{
+    font-size: 12px;
+    color: #7a5c00;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* PRONOSTICO 7 DIAS */
+
+.pronostico-titulo{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 14px 20px 10px;
+
+    font-size: 14px;
+    font-weight: bold;
+    color: #026432;
+}
+
+.pronostico-titulo .material-symbols-outlined{
+    font-size: 18px;
+}
+
+.pronostico-lista{
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pronostico-item{
+    display: grid;
+    grid-template-columns: 80px auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #f7f7f7;
+    transition: .2s;
+}
+
+.pronostico-item:hover{
+    background: #edf7f0;
+}
+
+.pronostico-item.hoy{
+    background: #E1F0E8;
+    border: 1px solid #a8d5b5;
+}
+
+.pronostico-dia{
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.pronostico-item img{
+    width: 32px;
+    height: 32px;
+}
+
+.pronostico-desc{
+    font-size: 12px;
+    color: #666;
+    text-transform: capitalize;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pronostico-temps{
+    text-align: right;
+    white-space: nowrap;
+}
+
+.pronostico-temps .max{
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+}
+
+.pronostico-temps .min{
+    font-size: 12px;
+    color: #999;
+    margin-left: 4px;
+}
+
+/* TORMENTA EN PRONOSTICO */
+
+.pronostico-item.tormenta{
+    background: #fff3cd;
+    border: 1px solid #ffc400;
+}
+
+.pronostico-item.tormenta .pronostico-dia{
+    color: #7a5c00;
+}
+
+/* ERROR */
+
+.clima-error{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    color: #999;
+    text-align: center;
+}
+
+.clima-error .material-symbols-outlined{
+    font-size: 40px;
+    color: #ccc;
+}
+
+.clima-error p{
+    font-size: 14px;
+}
+
+.clima-error button{
+    background: #026432;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: .3s;
+}
+
+.clima-error button:hover{
+    background: #014d27;
+}
+
+/* PIE DEL CLIMA */
+
+.clima-footer{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 10px 20px;
+    border-top: 1px solid #f0f0f0;
+
+    font-size: 11px;
+    color: #bbb;
+}
+
+.clima-footer .material-symbols-outlined{
+    font-size: 14px;
+}
+
+/* =========================
+   GRAFICO DE HORAS
+========================= */
+
+.grafico-horas-titulo{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 12px;
+    font-weight: bold;
+    color: #026432;
+
+    margin: 14px 0 8px;
+}
+
+.grafico-horas-titulo .material-symbols-outlined{
+    font-size: 15px;
+}
+
+.grafico-horas-scroll{
+    overflow-x: auto;
+    padding-bottom: 4px;
+    /* Barra de scroll fina */
+    scrollbar-width: thin;
+    scrollbar-color: #026432 #f0f0f0;
+}
+
+.grafico-horas-scroll::-webkit-scrollbar{
+    height: 4px;
+}
+.grafico-horas-scroll::-webkit-scrollbar-track{
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.grafico-horas-scroll::-webkit-scrollbar-thumb{
+    background: #026432;
+    border-radius: 4px;
+}
+
+.grafico-horas{
+    display: flex;
+    gap: 6px;
+    padding: 4px 2px 6px;
+    min-width: max-content;
+}
+
+.hora-col{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 44px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    background: #f7f7f7;
+    transition: background .2s;
+    cursor: default;
+}
+
+.hora-col:hover{
+    background: #e8f5e9;
+}
+
+/* Columna de la hora actual destacada */
+.hora-col.ahora{
+    background: #E1F0E8;
+    border: 2px solid #026432;
+}
+
+.hora-temp{
+    font-size: 12px;
+    font-weight: bold;
+    color: #111;
+}
+
+.hora-icono{
+    width: 28px;
+    height: 28px;
+}
+
+.hora-barra-wrap{
+    display: flex;
+    align-items: flex-end;
+    height: 82px; /* espacio fijo para todas las barras */
+}
+
+.hora-barra{
+    width: 14px;
+    border-radius: 4px 4px 0 0;
+    transition: height .4s ease;
+}
+
+/* Probabilidad de lluvia */
+.hora-prob{
+    font-size: 10px;
+    color: #1565c0;
+    font-weight: 600;
+}
+
+.hora-label{
+    font-size: 11px;
+    color: #999;
+}
+
+/* =========================
+   PRONOSTICO — horas de lluvia/tormenta
+========================= */
+
+/* Reemplaza .pronostico-desc solo por .pronostico-info */
+.pronostico-info{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.pronostico-desc{
+    font-size: 12px;
+    color: #666;
+    text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pronostico-horas{
+    font-size: 11px;
+    color: #1565c0;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pronostico-item.tormenta .pronostico-horas{
+    color: #b71c1c;
+}
+
+/* Día lluvioso (sin tormenta) */
+.pronostico-item.lluvia{
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+}
+
+.pronostico-item.lluvia .pronostico-dia{
+    color: #0d47a1;
+}
+
+/* =========================
+   BARRA DE SCROLL — columnas
+========================= */
+
+.noticias-main::-webkit-scrollbar,
+.clima-panel::-webkit-scrollbar{
+    width: 8px;
+}
+.noticias-main::-webkit-scrollbar-track,
+.clima-panel::-webkit-scrollbar-track{
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.noticias-main::-webkit-scrollbar-thumb,
+.clima-panel::-webkit-scrollbar-thumb{
+    background: #026432;
+    border-radius: 4px;
+}
+.noticias-main,
+.clima-panel{
+    scrollbar-width: thin;              /* Firefox */
+    scrollbar-color: #026432 #f0f0f0;   /* Firefox */
+}
+
+/* =========================
+        MODAL (BASE)
+========================= */
+
+.modal-logout{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s;
+    z-index: 9999;
+}
+
+.modal-logout.show{
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content{
+    background: white;
+    width: 400px;
+    max-width: 90%;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.modal-icon{
+    font-size: 60px;
+    color: #026432;
+    margin-bottom: 10px;
+}
+
+.modal-content h2{
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.modal-content p{
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.modal-buttons{
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-cancel,
+.btn-confirm{
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+
+.btn-cancel{ background:#ff0000; color:white; }
+.btn-cancel:hover{ background:#bf0000; }
+.btn-confirm{ background:#026432; color:white; }
+.btn-confirm:hover{ background:#014d27; }
+
+/* =========================
+        RESPONSIVE
+========================= */
+
+@media(max-width: 1100px){
+
+    .noticias-layout{
+        grid-template-columns: 1fr;
+        height: auto; /* 👈 en columnas apiladas no tiene sentido forzar el alto */
+    }
+
+    .noticias-main,
+    .clima-panel{
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .stats{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 700px){
+
+    .section-header h2{
+        font-size: 26px;
+    }
+
+    .toolbar{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left{
+        flex-direction: column;
+    }
+
+    .search-box{
+        max-width: 100%;
+    }
+
+    .btn-add{
+        justify-content: center;
+    }
+
+    .stats{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .news-grid{
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,204 @@
+/* =========================
+   postulaciones.css
+   Estilos específicos de la tabla de postulaciones.
+   Requiere: sidebar.css + recursos-humanos.css
+========================= */
+
+/* ── Stats adicionales ── */
+
+.stat-icon.pendiente  { background: #FFF6E0; color: #f9a825; }
+.stat-icon.revisado   { background: #E8F0FE; color: #1a56db; }
+.stat-icon.aceptado   { background: #E6F4EA; color: #2e7d32; }
+.stat-icon.rechazado  { background: #FCE8E6; color: #e53935; }
+
+/* ── Badges de estado de postulación ── */
+
+.badge-pendiente  { background: #FFF6E0; color: #b8860b; }
+.badge-revisado   { background: #E8F0FE; color: #1a56db; }
+.badge-aceptado   { background: #E6F4EA; color: #2e7d32; }
+.badge-rechazado  { background: #FCE8E6; color: #e53935; }
+
+/* ── Botón volver ── */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-back {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: #026432;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: .3s;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    text-decoration: none;
+}
+
+.btn-back:hover {
+    background: #026432;
+    color: white;
+}
+
+/* ── Modal ver detalle ── */
+
+.modal-post-ver {
+    max-width: 500px;
+    max-height: 88vh;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.modal-post-ver::-webkit-scrollbar { width: 5px; }
+.modal-post-ver::-webkit-scrollbar-thumb { background: #026432; border-radius: 10px; }
+
+/* Grid de datos del postulante */
+
+.post-ver-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 18px 0;
+    text-align: left;
+}
+
+.post-ver-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #f7f7f7;
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.post-ver-item .material-symbols-outlined {
+    font-size: 22px;
+    color: #026432;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.post-ver-label {
+    font-size: 11px;
+    color: #999;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 3px;
+}
+
+.post-ver-item p:last-child {
+    font-size: 14px;
+    color: #333;
+    word-break: break-all;
+}
+
+/* Botón descargar CV */
+
+.btn-ver-cv {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #026432;
+    color: white;
+    text-decoration: none;
+    padding: 11px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: .3s;
+    margin-bottom: 20px;
+}
+
+.btn-ver-cv:hover {
+    background: #014d27;
+}
+
+/* Cambio de estado */
+
+.post-ver-estado {
+    background: #f7f7f7;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.post-ver-estado .post-ver-label {
+    margin-bottom: 12px;
+    display: block;
+}
+
+.estado-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.chip-estado {
+    padding: 7px 16px;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    transition: .25s;
+    font-family: inherit;
+}
+
+.chip-estado:hover {
+    border-color: #026432;
+    color: #026432;
+}
+
+.chip-estado.chip-activo {
+    background: #026432;
+    border-color: #026432;
+    color: white;
+}
+
+/* ── Botón Postulaciones en recursos-humanos.html ── */
+
+.btn-postulaciones {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: #026432;
+    border: 2px solid #026432;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: .3s;
+    white-space: nowrap;
+}
+
+.btn-postulaciones:hover {
+    background: #026432;
+    color: white;
+}
+
+/* ── Responsive ── */
+
+@media(max-width: 700px){
+    .post-ver-grid {
+        grid-template-columns: 1fr;
+    }
+    .estado-chips {
+        flex-direction: column;
+    }
+    .chip-estado {
+        text-align: center;
+    }
+}

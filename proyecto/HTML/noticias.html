@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias | Comercializadora El Ingenio</title>
+    <link rel="stylesheet" href="../CSS/noticias.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+
+<body>
+
+<!-- =========================
+        HEADER
+========================= -->
+
+<header class="header">
+    <div class="logo">
+        <img src="../img/logo_ci 2.png" alt="Logo">
+    </div>
+    <h1 class="titulo-header">COMERCIALIZADORA EL INGENIO</h1>
+    <nav class="navbar">
+        <a href="index.html">
+            <span class="material-symbols-outlined">home</span>
+            Inicio
+        </a>
+        <a href="../HTML/productos.html">
+            <span class="material-symbols-outlined">liquor</span>
+            Productos
+        </a>
+        <a href="recursos-humanos.html">
+            <span class="material-symbols-outlined">groups</span>
+            Recursos Humanos
+        </a>
+        <a href="../HTML/noticias.html" class="active">
+            <span class="material-symbols-outlined">campaign</span>
+            Noticias
+        </a>
+        <a href="../HTML/sugerencias.html">
+            <span class="material-symbols-outlined">markunread_mailbox</span>
+            Sugerencias
+        </a>
+    </nav>
+</header>
+
+<!-- =========================
+        BANNER
+========================= -->
+
+<section class="banner">
+    <div class="overlay"></div>
+    <img src="../img/banner_noticias.png" alt="Banner">
+    <div class="banner-content">
+        <h1>Noticias</h1>
+        <p>Mantente informado sobre los acontecimientos,
+            actividades y comunicados de Comercializadora El Ingenio.</p>
+    </div>
+</section>
+
+<!-- =========================
+    NOTICIAS Y AVISOS
+========================= -->
+
+<section class="announcements">
+
+    <div class="section-title">
+        <span>INFORMACIÓN</span>
+        <h2>Noticias y Avisos</h2>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="news-filters">
+        <button class="filter-btn active" data-filter="todos">
+            <span class="material-symbols-outlined">apps</span>
+            Todos
+        </button>
+        <button class="filter-btn" data-filter="noticia">
+            <span class="material-symbols-outlined">newspaper</span>
+            Noticias
+        </button>
+        <button class="filter-btn" data-filter="avisos">
+            <span class="material-symbols-outlined">campaign</span>
+            Avisos
+        </button>
+    </div>
+
+    <!-- SUBFILTROS -->
+    <div class="news-subfilters" id="subfilters">
+        <button class="subfilter-btn active" data-sub="todos-avisos">Todos</button>
+        <button class="subfilter-btn" data-sub="aviso">
+            <span class="news-badge badge-aviso">Aviso</span>
+        </button>
+        <button class="subfilter-btn" data-sub="comunicado">
+            <span class="news-badge badge-comunicado">Comunicado</span>
+        </button>
+        <button class="subfilter-btn" data-sub="alerta">
+            <span class="news-badge badge-alerta">Alerta</span>
+        </button>
+    </div>
+
+    <!-- ✅ Contenedor vacío — el JS lo llena desde el backend -->
+    <div class="news-container" id="newsContainer">
+
+        <!-- ✅ Estado de carga visible mientras el JS trae los datos -->
+        <div class="news-cargando" id="newsCargando">
+            <span class="material-symbols-outlined spin">refresh</span>
+            <p>Cargando noticias...</p>
+        </div>
+
+    </div>
+
+    <!-- SIN RESULTADOS -->
+    <div class="news-empty" id="newsEmpty" style="display:none;">
+        <span class="material-symbols-outlined">search_off</span>
+        <p>No hay resultados para este filtro.</p>
+    </div>
+
+    <!-- ERROR DE CONEXIÓN -->
+    <div id="newsError" class="offline-state" style="display:none;">
+    <div class="offline-icon">
+        <span class="material-symbols-outlined">wifi_off</span>
+    </div>
+    <h3>Sin conexión con el servidor</h3>
+    <p>No pudimos cargar las noticias. Verifica tu conexión e inténtalo de nuevo.</p>
+    <button class="offline-retry" onclick="cargarNoticias()">
+        <span class="material-symbols-outlined">refresh</span>
+        Reintentar
+    </button>
+</div>
+
+</section>
+
+<!-- =========================
+    ÚLTIMAS NOTICIAS
+========================= -->
+
+<section class="news-highlights">
+    <div class="section-title">
+        <span>ACTUALIDAD</span>
+        <h2>Acontecimientos Destacados</h2>
+    </div>
+    <div class="news-highlights-container">
+
+        <div class="news-highlight-card">
+            <span class="material-symbols-outlined">rocket_launch</span>
+            <h3>Mejora Operativa</h3>
+            <p>Implementación de nuevas herramientas para optimizar los procesos productivos.</p>
+        </div>
+
+        <div class="news-highlight-card">
+            <span class="material-symbols-outlined">local_library</span>
+            <h3>Capacitación</h3>
+            <p>Programas de formación continua para fortalecer las competencias del personal.</p>
+        </div>
+
+        <div class="news-highlight-card">
+            <span class="material-symbols-outlined">newspaper</span>
+            <h3>Eventos Internos</h3>
+            <p>Actividades enfocadas en la integración y trabajo en equipo de los colaboradores.</p>
+        </div>
+
+        <div class="news-highlight-card">
+            <span class="material-symbols-outlined">engineering</span>
+            <h3>Mantenimiento</h3>
+            <p>Trabajos preventivos y correctivos para garantizar la continuidad operativa.</p>
+        </div>
+
+        <div class="news-highlight-card">
+            <span class="material-symbols-outlined">emoji_events</span>
+            <h3>Reconocimientos</h3>
+            <p>Distinciones otorgadas a colaboradores por su desempeño y compromiso.</p>
+        </div>
+
+        <div class="news-highlight-card">
+            <span class="material-symbols-outlined">celebration</span>
+            <h3>Eventos Especiales</h3>
+            <p>Celebraciones, aniversarios y actividades institucionales de la organización.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- =========================
+        FOOTER
+========================= -->
+
+<footer class="footer">
+    <div class="footer-container">
+
+        <div class="footer-box">
+            <h3>Comercializadora El Ingenio</h3>
+            <p>Empresa mexicana enfocada en la producción y comercialización
+                de derivados de la caña de azúcar, integrando innovación,
+                calidad y compromiso con la industria.</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Contacto</h3>
+            <p><i class="fa-solid fa-location-dot"></i>
+                Carretera Córdoba – Paso del Macho Km 8,
+                Potrero Nuevo, Municipio de Atoyac, Veracruz, México.</p>
+            <p><i class="fa-solid fa-phone"></i> 273 734 4050</p>
+            <p><i class="fa-solid fa-envelope"></i> asistencia@comercializadoraelingenio.com</p>
+        </div>
+
+    </div>
+
+    <div class="footer-social">
+        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+
+    <div class="footer-copy">
+        <p>© 2026 Comercializadora El Ingenio | Todos los derechos reservados</p>
+    </div>
+</footer>
+
+<!-- MODAL NOTICIAS -->
+
+<div class="modal-news" id="modalNews">
+    <div class="modal-news-content">
+
+        <span class="close-modal-news">&times;</span>
+
+        <div class="modal-news-img">
+            <button class="modal-img-btn" id="modalImgPrev">&#10094;</button>
+            <img src="" id="newsModalImg" alt="">
+            <button class="modal-img-btn" id="modalImgNext">&#10095;</button>
+        </div>
+
+        <div class="modal-news-info">
+            <div class="modal-news-meta">
+                <span class="news-badge-modal" id="newsModalBadge"></span>
+                <span class="news-modal-date" id="newsModalFecha"></span>
+            </div>
+            <h2 id="newsModalTitulo"></h2>
+            <p class="news-modal-categoria" id="newsModalCategoria"></p>
+            <div class="news-modal-contenido" id="newsModalContenido"></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="../JS/noticias.js"></script>
+
+
+</body>
+</html>

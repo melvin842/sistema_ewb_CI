@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo</title>
+
+    <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
+    <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
+    <link rel="stylesheet" href="../../CSS/panel/dashboard.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="../../img/logo_ci_blanco.png" alt="">
+        </div>
+
+        <h3>Menú</h3>
+
+        <nav>
+
+            <a href="../../HTML/panel/dashboard.html" class="active">
+                <span class="material-symbols-outlined">home</span>
+                Inicio
+            </a>
+
+            <a href="../../HTML/panel/productos.html">
+                <span class="material-symbols-outlined">liquor</span>
+                Productos
+            </a>
+
+            <a href="../../HTML/panel/recursos-humanos.html">
+                <span class="material-symbols-outlined">groups</span>
+                Recursos Humanos
+            </a>
+
+            <a href="../../HTML/panel/noticias.html">
+                <span class="material-symbols-outlined">campaign</span>
+                Noticias
+            </a>
+
+            <a href="../../HTML/panel/sugerencias.html">
+                <span class="material-symbols-outlined">markunread_mailbox</span>
+                Sugerencias
+            </a>
+
+        </nav>
+
+        <div class="logout">
+            <a href="#" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <main class="content">
+
+        <header class="topbar">
+
+            <h1>COMERCIALIZADORA EL INGENIO</h1>
+
+            <div class="user-menu" id="userMenu">
+
+    <button class="user-btn" id="userBtn" type="button">
+        <i class="fa-solid fa-circle-user"></i>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-dropdown-header">
+            <strong id="userDropdownNombre">Usuario</strong>
+            <span id="userDropdownRol">--</span>
+        </div>
+
+        <a href="../panel/perfil.html">
+            <i class="fa-solid fa-id-card"></i> Ver Perfil
+        </a>
+
+        <a href="crear usuario.html" id="linkCrearUsuario" style="display:none;">
+            <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+        </a>
+
+    </div>
+
+</div>
+
+        </header>
+
+        <section class="welcome">
+            <h2>Bienvenido Administrador</h2>
+        </section>
+
+        <section class="cards">
+
+            <!-- PRODUCTOS -->
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>Productos</h3>
+                    <span class="material-symbols-outlined">
+                   liquor
+                 </span>
+                </div>
+
+                <h2 id="prodTotal">-- <span>Registrados</span></h2>
+
+                <ul>
+
+    <li>
+        <span class="material-symbols-outlined icon-yellow">
+            warning
+        </span>
+        <span id="prodInactivos">--</span> Inactivos
+    </li>
+
+    <li>
+        <span class="material-symbols-outlined icon-green">
+            check_circle
+        </span>
+        <span id="prodActivos">--</span> Activos
+    </li>
+
+</ul>
+
+                <p id="prodActualizado">Actualizado hace 7 días</p>
+
+            </div>
+
+            <!-- VACANTES -->
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>Vacantes</h3>
+                <span class="material-symbols-outlined">
+    work
+</span>
+                </div>
+
+                <h2 id="vacTotal">-- <span>Registradas</span></h2>
+
+                <ul>
+
+    <li>
+        <span class="material-symbols-outlined icon-green">
+            check_circle
+        </span>
+        <span id="vacAbiertas">--</span> Vacantes Abiertas
+    </li>
+
+    <li>
+        <span class="material-symbols-outlined icon-yellow">
+            warning
+        </span>
+        <span id="vacProximas">--</span> Próxima(s) a Cerrar
+    </li>
+
+    <li>
+        <span class="material-symbols-outlined icon-red">
+            cancel
+        </span>
+        <span id="vacCerradas">--</span> Cerradas
+    </li>
+
+</ul>
+
+                <p id="vacActualizado">Actualizado hace 7 días</p>
+
+            </div>
+
+            <!-- NOTICIAS -->
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>Noticias</h3>
+                   <span class="material-symbols-outlined">
+    campaign
+</span>
+                </div>
+
+                <h2 id="newsTotal">-- <span>Publicaciones</span></h2>
+
+                <ul>
+
+    <li>
+        <span class="material-symbols-outlined icon-green">
+            check_circle
+        </span>
+        <span id="newsPublicadas">--</span> Publicadas
+    </li>
+
+    <li>
+        <span class="material-symbols-outlined icon-yellow">
+            visibility_off
+        </span>
+        <span id="newsOcultas">--</span> Ocultas
+    </li>
+
+    <li>
+        <span class="material-symbols-outlined icon-red">
+            campaign
+        </span>
+        <span id="newsAlertas">--</span> Alertas
+    </li>
+
+</ul>
+
+                <p id="newsActualizado">Actualizado hace 7 días</p>
+
+            </div>
+
+            <!-- SUGERENCIAS -->
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>Sugerencias</h3>
+                    <span class="material-symbols-outlined">
+    markunread_mailbox
+</span>
+                </div>
+
+                <h2 id="sugTotal">-- <span>Recibidas</span></h2>
+
+                <ul>
+
+    <li>
+        <span class="material-symbols-outlined icon-yellow">
+            pending_actions
+        </span>
+        <span id="sugPendientes">--</span> Pendientes
+    </li>
+
+    <li>
+        <span class="material-symbols-outlined icon-green">
+            mark_email_read
+        </span>
+        <span id="sugRevisadas">--</span> Revisadas
+    </li>
+
+</ul>
+
+                <p id="sugActualizado">Actualizado hace 7 días</p>
+
+            </div>
+
+        </section>
+
+        <!-- MODAL CERRAR SESIÓN -->
+
+<div class="modal-logout" id="modalLogout">
+
+    <div class="modal-content">
+
+        <span class="material-symbols-outlined modal-icon">
+            logout
+        </span>
+
+        <h2>¿Desea salir del panel administrativo?</h2>
+
+        <p>
+            Se cerrará la sesión actual del administrador.
+        </p>
+
+        <div class="modal-buttons">
+
+            <button id="cancelLogout" class="btn-cancel">
+                Cancelar
+            </button>
+
+            <button id="confirmLogout" class="btn-confirm">
+                Salir
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    </main>
+
+</div>
+
+<script src="../../JS/panel/control-acceso.js"></script>
+<script src="../../JS/panel/perfil'menu.js"></script>
+<script src="../../JS/panel/alerts.js"> </script>
+<script src="../../JS/panel/dashboard.js"></script>
+
+</body>
+</html>

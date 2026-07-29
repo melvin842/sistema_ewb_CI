@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias | Panel Administrativo</title>
+
+    <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
+    <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
+    <link rel="stylesheet" href="../../CSS/panel/noticias.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        media="all">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="../../img/logo_ci_blanco.png" alt="">
+        </div>
+
+        <h3>Menú</h3>
+
+        <nav>
+
+            <a href="../panel/dashboard.html">
+                <span class="material-symbols-outlined">home</span>
+                Inicio
+            </a>
+
+            <a href="../panel/productos.html">
+                <span class="material-symbols-outlined">liquor</span>
+                Productos
+            </a>
+
+            <a href="../panel/recursos-humanos.html">
+                <span class="material-symbols-outlined">groups</span>
+                Recursos Humanos
+            </a>
+
+            <a href="../panel/noticias.html" class="active">
+                <span class="material-symbols-outlined">campaign</span>
+                Noticias
+            </a>
+
+            <a href="../panel/sugerencias.html">
+                <span class="material-symbols-outlined">markunread_mailbox</span>
+                Sugerencias
+            </a>
+
+        </nav>
+
+        <div class="logout">
+            <a href="#" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+
+    <main class="content">
+
+        <header class="topbar">
+            <h1>COMERCIALIZADORA EL INGENIO</h1>
+            
+            <div class="user-menu" id="userMenu">
+
+    <button class="user-btn" id="userBtn" type="button">
+        <i class="fa-solid fa-circle-user"></i>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-dropdown-header">
+            <strong id="userDropdownNombre">Usuario</strong>
+            <span id="userDropdownRol">--</span>
+        </div>
+
+        <a href="perfil.html?modo=ver">
+            <i class="fa-solid fa-id-card"></i> Ver Perfil
+        </a>
+
+        <a href="crear usuario.html" id="linkCrearUsuario" style="display:none;">
+            <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+        </a>
+
+    </div>
+
+</div>
+
+        </header>
+
+        <!-- LAYOUT: NOTICIAS + CLIMA -->
+
+        <div class="noticias-layout">
+
+            <!-- ================================
+                COLUMNA PRINCIPAL — NOTICIAS
+            ================================ -->
+
+            <div class="noticias-main">
+
+                <div class="section-header">
+                    <h2>Administrar Noticias</h2>
+                </div>
+
+                <!-- ESTADISTICAS -->
+
+                <section class="stats">
+
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <span class="material-symbols-outlined">newspaper</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statTotal">0</h3>
+                            <p>Totales</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon activo">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statPublicadas">0</h3>
+                            <p>Publicadas</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon inactivo">
+                            <span class="material-symbols-outlined">visibility_off</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statOcultas">0</h3>
+                            <p>Ocultas</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon alerta">
+                            <span class="material-symbols-outlined">warning</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statAlertas">0</h3>
+                            <p>Alertas</p>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- BARRA DE HERRAMIENTAS -->
+
+                <div class="toolbar">
+
+                    <div class="toolbar-left">
+
+                        <div class="search-box">
+                            <span class="material-symbols-outlined">search</span>
+                            <input type="text" id="buscarNoticia" placeholder="Buscar noticia">
+                        </div>
+
+                        <select class="filter-select" id="filtroTipo">
+                            <option value="todos">Todos los tipos</option>
+                            <option value="noticia">Noticias</option>
+                            <option value="aviso">Avisos</option>
+                            <option value="comunicado">Comunicados</option>
+                            <option value="alerta">Alertas</option>
+                        </select>
+
+                        <select class="filter-select" id="filtroEstado">
+                            <option value="todos">Todos los estados</option>
+                            <option value="activo">Publicadas</option>
+                            <option value="inactivo">Ocultas</option>
+                        </select>
+
+                    </div>
+
+                    <a href="../panel/agregar-noticias.html" class="btn-add">
+                        <i class="fa-solid fa-plus"></i>
+                        Agregar Noticia
+                    </a>
+
+                </div>
+
+                <!-- GRID DE CARDS -->
+
+                <div class="news-grid" id="newsGrid">
+                    <!-- Cards generadas por JS -->
+                </div>
+
+                <!-- ESTADO VACIO -->
+
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <span class="material-symbols-outlined">newspaper</span>
+                    <p>No se encontraron noticias.</p>
+                </div>
+
+                <!-- PAGINACION -->
+
+                <div class="pagination" id="paginacion"></div>
+
+            </div>
+
+            <!-- ================================
+                COLUMNA LATERAL — CLIMA
+            ================================ -->
+
+            <aside class="clima-panel">
+
+            <div class="clima-header">
+    <span class="material-symbols-outlined">partly_cloudy_day</span>
+    <h3 id="ubicacionClima">Clima</h3>
+            </div>
+
+                <!-- HOY -->
+
+                <div class="clima-hoy" id="climaHoy">
+
+                    <div class="clima-loading" id="climaLoading">
+                        <span class="material-symbols-outlined spin">refresh</span>
+                        <p>Cargando clima...</p>
+                    </div>
+
+                    <div class="clima-hoy-content" id="climaHoyContent" style="display:none;">
+
+                        <div class="clima-hoy-top">
+                            <img src="" id="climaIconoHoy" alt="">
+                            <div>
+                                <span class="clima-temp" id="climaTempHoy">--°C</span>
+                                <span class="clima-desc" id="climaDescHoy">--</span>
+                            </div>
+                        </div>
+
+                        <div class="clima-detalles">
+
+                            <div class="clima-detalle-item">
+                                <span class="material-symbols-outlined">water_drop</span>
+                                <div>
+                                    <span class="label">Humedad</span>
+                                    <span id="climaHumedad">--%</span>
+                                </div>
+                            </div>
+
+                            <div class="clima-detalle-item">
+                                <span class="material-symbols-outlined">air</span>
+                                <div>
+                                    <span class="label">Viento</span>
+                                    <span id="climaViento">-- km/h</span>
+                                </div>
+                            </div>
+
+                            <div class="clima-detalle-item">
+                                <span class="material-symbols-outlined">thermostat</span>
+                                <div>
+                                    <span class="label">Sensación</span>
+                                    <span id="climaSensacion">--°C</span>
+                                </div>
+                            </div>
+
+                            <div class="clima-detalle-item">
+                                <span class="material-symbols-outlined">umbrella</span>
+                                <div>
+                                    <span class="label">Lluvia</span>
+                                    <span id="climaLluvia">-- mm</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                                                    <!-- GRAFICO DE HORAS HOY -->
+                                                        <div class="grafico-horas-titulo">
+                                                    <span class="material-symbols-outlined">schedule</span>
+                                                    Clima hora por hora — Hoy
+                                                </div>
+                                            <div class="grafico-horas-scroll">
+                                        <div class="grafico-horas" id="graficoHoras">
+                                        <!-- Generado por clima.js -->
+                                </div>
+                        </div>
+
+                        <!-- ALERTA DE TORMENTA -->
+
+                        <div class="clima-alerta" id="climaAlerta" style="display:none;">
+                            <span class="material-symbols-outlined">thunderstorm</span>
+                            <div>
+                                <strong>¡Alerta de Tormenta!</strong>
+                                <p id="climaAlertaTexto">Se prevén tormentas eléctricas. Evitar actividades al aire libre.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRONOSTICO 7 DIAS -->
+
+                <div class="pronostico-titulo">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    Pronóstico 7 días
+                </div>
+
+                <div class="pronostico-lista" id="pronosticoLista">
+                    <!-- Items generados por JS -->
+                </div>
+
+                <!-- ERROR DE CLIMA -->
+
+                <div class="clima-error" id="climaError" style="display:none;">
+                    <span class="material-symbols-outlined">wifi_off</span>
+                    <p>No se pudo cargar el clima.</p>
+                    <button id="climaReintentar">Reintentar</button>
+                </div>
+
+                <div class="clima-footer">
+                    <span class="material-symbols-outlined">info</span>
+                    Datos: Open-Meteo API (gratuita)
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL CONFIRMAR ELIMINACION -->
+
+    <div class="modal-logout" id="modalEliminar">
+        <div class="modal-content">
+
+            <span class="material-symbols-outlined modal-icon">delete</span>
+
+            <h2>¿Eliminar esta noticia?</h2>
+            <p>Esta acción no se puede deshacer.</p>
+
+            <div class="modal-buttons">
+                <button id="cancelEliminar" class="btn-cancel">Cancelar</button>
+                <button id="confirmEliminar" class="btn-confirm">Eliminar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL CERRAR SESION -->
+
+    <div class="modal-logout" id="modalLogout">
+        <div class="modal-content">
+
+            <span class="material-symbols-outlined modal-icon">logout</span>
+
+            <h2>¿Desea salir del panel administrativo?</h2>
+            <p>Se cerrará la sesión actual del administrador.</p>
+
+            <div class="modal-buttons">
+                <button id="cancelLogout" class="btn-cancel">Cancelar</button>
+                <button id="confirmLogout" class="btn-confirm">Salir</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="../../JS/panel/control-acceso.js"></script>
+<script src="../../JS/panel/perfil'menu.js"></script>
+<script src="../../JS/panel/alerts.js"></script>
+<script src="../../JS/panel/dashboard.js"></script>
+<script src="../../JS/panel/noticias.js"></script>
+<script src="../../JS/panel/clima.js"></script>
+
+</body>
+</html>

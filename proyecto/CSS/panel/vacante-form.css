@@ -1,0 +1,320 @@
+/* =========================
+   vacante-form.css
+   Estilos específicos para agregar/editar vacante
+   Requiere: sidebar.css + form-base.css
+========================= */
+
+/* =========================
+   GRID PRINCIPAL
+========================= */
+
+.vacante-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;   /* col izq: vista previa | col der: imagen + campos */
+    grid-template-rows: auto auto;
+    gap: 28px 32px;
+    align-items: start;
+}
+
+/* Vista previa — columna izquierda, ocupa las 2 filas */
+.vacante-preview {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+
+/* Imagen + icono — columna derecha, fila 1 */
+.imagen-box {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+/* Campos — columna derecha, fila 2 */
+.form-fields {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+/* =========================
+   VISTA PREVIA
+========================= */
+
+.preview-wrapper {
+    margin-top: 10px;
+}
+
+.preview-wrapper h4 {
+    font-size: 13px;
+    font-weight: bold;
+    color: #026432;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.preview-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0,0,0,.10);
+    transition: .3s;
+    border: 1px solid #eee;
+    max-width: 210px;
+}
+
+.preview-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(2,100,50,.13);
+}
+
+.preview-card > img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+    background: #f0f0f0;
+}
+
+.preview-card > img:not([src]),
+.preview-card > img[src=""] {
+    display: none;
+}
+
+.preview-info {
+    padding: 14px;
+}
+
+/* ÍCONO CIRCULAR */
+
+.preview-icon {
+    width: 44px;
+    height: 44px;
+    background: #026432;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(2,100,50,.25);
+}
+
+.preview-icon .material-symbols-outlined {
+    font-size: 22px;
+    color: white;
+}
+
+/* TÍTULO DEL PUESTO */
+
+.preview-info h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+/* DESCRIPCIÓN */
+
+.preview-desc {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* LISTA DE REQUISITOS */
+
+.preview-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.preview-info ul li {
+    font-size: 12px;
+    color: #555;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    line-height: 1.5;
+}
+
+.preview-info ul li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    min-width: 6px;
+    background: #026432;
+    border-radius: 50%;
+    margin-top: 5px;
+}
+
+/* ENLACE */
+
+.preview-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #026432;
+    text-decoration: none;
+    position: relative;
+}
+
+.preview-link::after {
+    content: "";
+    width: 0%;
+    height: 2px;
+    background: #026432;
+    position: absolute;
+    left: 0; bottom: -3px;
+    transition: .3s;
+}
+
+.preview-link:hover::after { width: 100%; }
+
+/* =========================
+   IMAGEN PRINCIPAL — compacta
+========================= */
+
+.imagen-box h4 {
+    font-size: 13px;
+    font-weight: bold;
+    color: #026432;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Contenedor de la imagen reducido */
+.imagen-principal {
+    width: 100%;
+    max-width: 340px;          /* antes ocupaba todo el ancho */
+    height: 140px;             /* antes era ~220px implícito */
+    border: 2px dashed #ccc;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    background: #fafafa;
+    transition: border-color .3s;
+}
+
+.imagen-principal:hover {
+    border-color: #026432;
+}
+
+.imagen-principal .placeholder {
+    font-size: 40px;
+    color: #ccc;
+    pointer-events: none;
+}
+
+.imagen-principal img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+}
+
+.imagen-principal input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+/* =========================
+   MODAL CERRAR SESIÓN
+========================= */
+
+.modal-logout {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: .3s;
+}
+
+.modal-logout.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-logout .modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 36px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    animation: popIn .3s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(.9); opacity: 0; }
+    to   { transform: scale(1);  opacity: 1; }
+}
+
+.modal-logout .modal-icon {
+    font-size: 56px;
+    color: #026432;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.modal-logout h2 {
+    font-size: 20px;
+    color: #111;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.modal-logout p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 28px;
+}
+
+.modal-logout .modal-buttons {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+.modal-logout .btn-cancel,
+.modal-logout .btn-confirm {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.modal-logout .btn-cancel  { background: #f0f0f0; color: #444; }
+.modal-logout .btn-cancel:hover  { background: #e0e0e0; }
+.modal-logout .btn-confirm { background: #026432; color: white; }
+.modal-logout .btn-confirm:hover { background: #014d27; }

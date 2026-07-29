@@ -1,0 +1,110 @@
+/* =========================
+        BIENVENIDA
+========================= */
+
+.welcome{
+    text-align:center;
+    margin:30px 0;
+}
+
+.welcome h2{
+    font-size:45px;
+    color:#8BC34A;
+}
+
+/* =========================
+        CARDS
+========================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+
+    border-radius:15px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card-header h3{
+    color:#026432;
+    font-size:30px;
+}
+
+.card-header .material-symbols-outlined{
+    font-size: 32px;
+    color: #026432;
+}
+
+.card h2{
+    text-align:center;
+    color:#026432;
+    margin:10px 0;
+}
+
+.card h2 span{
+    font-size:20px;
+    color:#333;
+}
+
+.card ul{
+    list-style: none;
+    margin: 15px 0;
+}
+
+.card ul li{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.card ul li .material-symbols-outlined{
+    font-size: 20px;
+}
+
+.card p{
+    margin-top:15px;
+    color:#777;
+}
+
+/* ICONOS DE ESTADO */
+
+.icon-red{
+    color: #e53935;
+}
+
+.icon-green{
+    color: #2e7d32;
+}
+
+.icon-yellow{
+    color: #f9a825;
+}
+
+/* =========================
+        RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .welcome h2{
+        font-size:30px;
+    }
+}

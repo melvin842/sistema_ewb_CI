@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Vacante | Panel Administrativo</title>
+
+    <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
+    <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
+    <link rel="stylesheet" href="../../CSS/panel/form-base.css">
+    <link rel="stylesheet" href="../../CSS/panel/vacante-form.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../../img/logo_ci_blanco.png" alt="">
+        </div>
+        <h3>Menú</h3>
+        <nav>
+            <a href="dashboard.html"><span class="material-symbols-outlined">home</span>Inicio</a>
+            <a href="productos.html"><span class="material-symbols-outlined">liquor</span>Productos</a>
+            <a href="recursos-humanos.html" class="active"><span class="material-symbols-outlined">groups</span>Recursos Humanos</a>
+            <a href="noticias.html"><span class="material-symbols-outlined">campaign</span>Noticias</a>
+            <a href="sugerencias.html"><span class="material-symbols-outlined">markunread_mailbox</span>Sugerencias</a>
+        </nav>
+        <div class="logout">
+            <a href="#" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+
+        <header class="topbar">
+            <h1>COMERCIALIZADORA EL INGENIO</h1>
+            
+            <div class="user-menu" id="userMenu">
+
+    <button class="user-btn" id="userBtn" type="button">
+        <i class="fa-solid fa-circle-user"></i>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-dropdown-header">
+            <strong id="userDropdownNombre">Usuario</strong>
+            <span id="userDropdownRol">--</span>
+        </div>
+
+        <a href="perfil.html?modo=ver">
+            <i class="fa-solid fa-id-card"></i> Ver Perfil
+        </a>
+
+        <a href="crear usuario.html" id="linkCrearUsuario" style="display:none;">
+            <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+        </a>
+
+    </div>
+
+</div>
+
+        </header>
+
+        <div class="section-header">
+            <a href="recursos-humanos.html" class="btn-back">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h2 id="tituloFormulario">Editar Vacante</h2>
+        </div>
+
+        <form class="form-container" id="formVacante">
+
+            <!--
+                MISMO LAYOUT que agregar-vacante:
+                col 1 (220px) → Vista Previa  (abarca 2 filas)
+                col 2 (resto) → fila 1: Imagen + Ícono
+                                fila 2: Campos del formulario
+            -->
+            <div class="form-grid vacante-grid">
+
+                <!-- ── VISTA PREVIA ── col 1, filas 1-2 ── -->
+                <div class="preview-wrapper vacante-preview">
+
+                    <h4>Vista Previa</h4>
+
+                    <div class="preview-card" id="previewCard">
+
+                        <img src="" id="previewImg" alt="">
+
+                        <div class="preview-info">
+                            <div class="preview-icon">
+                                <span class="material-symbols-outlined" id="previewIcono">work</span>
+                            </div>
+                            <h3 id="previewPuesto">Nombre del puesto</h3>
+                            <p class="preview-desc" id="previewDesc">Descripción del puesto...</p>
+                            <a href="#" class="preview-link" onclick="return false;">Más Información</a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ── IMAGEN + ÍCONO ── col 2, fila 1 ── -->
+                <div class="imagen-box">
+
+                    <h4>Imagen</h4>
+
+                    <div class="imagen-principal" id="imagenPrincipal">
+                        <span class="material-symbols-outlined placeholder">add_photo_alternate</span>
+                        <input type="file" id="inputImagenPrincipal" accept="image/*">
+                    </div>
+
+                    <span class="hint" style="display:block; margin-top:6px;">
+                        Haz clic para cambiar la imagen actual.
+                    </span>
+
+                    <div class="input-group" style="margin-top:16px; max-width:340px;">
+                        <label for="icono">Ícono</label>
+                        <select id="icono">
+                            <option value="work">General</option>
+                            <option value="local_shipping">Camión / Envíos</option>
+                            <option value="precision_manufacturing">Producción</option>
+                            <option value="badge">Administrativo</option>
+                            <option value="engineering">Mantenimiento</option>
+                            <option value="security">Seguridad</option>
+                            <option value="point_of_sale">Ventas</option>
+                            <option value="warehouse">Almacén</option>
+                        </select>
+                        <span class="hint">Se muestra como ícono circular en la card.</span>
+                    </div>
+
+                </div>
+
+                <!-- ── CAMPOS ── col 2, fila 2 ── -->
+                <div class="form-fields">
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="puesto">Puesto <span style="color:#e53935">*</span></label>
+                            <input type="text" id="puesto" required maxlength="150" placeholder="Ej. Chofer Repartidor">
+                        </div>
+                        <div class="input-group">
+                            <label for="fechaCierre">Fecha de Cierre</label>
+                            <input type="date" id="fechaCierre">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="descripcion">Descripción <span style="color:#e53935">*</span></label>
+                        <textarea id="descripcion" required maxlength="300"
+                                  placeholder="Breve descripción del puesto y sus responsabilidades."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="requisitos">Requisitos</label>
+                            <textarea id="requisitos" class="tall"
+                                      placeholder="Un requisito por línea&#10;Ej:&#10;Licencia federal vigente&#10;Experiencia en manejo"></textarea>
+                            <span class="hint">Un requisito por línea.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="ofrecemos">Qué Ofrecemos</label>
+                            <textarea id="ofrecemos" class="tall"
+                                      placeholder="Un beneficio por línea&#10;Ej:&#10;Prestaciones de ley&#10;Uniformes"></textarea>
+                            <span class="hint">Un beneficio por línea.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="horario">Horario</label>
+                            <input type="text" id="horario" maxlength="100" placeholder="Ej. Lunes a sábado 8:00 - 17:00">
+                        </div>
+                        <div class="input-group">
+                            <label for="salario">Salario</label>
+                            <input type="text" id="salario" maxlength="50" placeholder="Ej. $10,000 MXN mensual">
+                        </div>
+                    </div>
+
+                    <div class="estado-group">
+                        <label class="titulo">Estado</label>
+                        <div class="estado-opciones">
+                            <label class="estado-opcion activo">
+                                <input type="radio" name="estado" value="activo" checked>
+                                <span class="dot"></span>Disponible
+                            </label>
+                            <label class="estado-opcion proximo">
+                                <input type="radio" name="estado" value="proximo">
+                                <span class="dot"></span>Próxima a Cerrar
+                            </label>
+                            <label class="estado-opcion inactivo">
+                                <input type="radio" name="estado" value="inactivo">
+                                <span class="dot"></span>Cerrada
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <a href="recursos-humanos.html" class="btn-cancelar">
+                    <span class="material-symbols-outlined">close</span>Cancelar
+                </a>
+                <button type="submit" class="btn-guardar" id="btnGuardar">
+                    <span class="material-symbols-outlined">save</span>Actualizar
+                </button>
+            </div>
+
+        </form>
+
+        <div class="modal-logout" id="modalLogout">
+            <div class="modal-content">
+                <span class="material-symbols-outlined modal-icon">logout</span>
+                <h2>¿Desea salir del panel administrativo?</h2>
+                <p>Se cerrará la sesión actual del administrador.</p>
+                <div class="modal-buttons">
+                    <button id="cancelLogout" class="btn-cancel">Cancelar</button>
+                    <button id="confirmLogout" class="btn-confirm">Salir</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="../../JS/panel/control-acceso.js"></script>
+<script src="../../JS/panel/perfil'menu.js"></script>
+<script src="../../JS/panel/alerts.js"></script>
+<script src="../../JS/panel/dashboard.js"></script>
+<script src="../../JS/panel/form-utils.js"></script>
+<script src="../../JS/panel/vacante-form.js"></script>
+
+</body>
+</html>

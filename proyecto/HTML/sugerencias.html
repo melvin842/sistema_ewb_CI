@@ -1,0 +1,286 @@
+<!DOCTYPE html5>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sugerencias | Comercializadora El Ingenio</title>
+
+    <link rel="stylesheet" href="../CSS/sugerencias.css">
+
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- ICONOS -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+</head>
+
+<body>
+
+<!-- =========================
+        HEADER
+========================= -->
+
+<header class="header">
+
+    <div class="logo">
+
+        <img src="../img/logo_ci 2.png" alt="Logo">
+
+    </div>
+
+    <h1 class="titulo-header">
+        COMERCIALIZADORA EL INGENIO
+    </h1>
+
+    <nav class="navbar">
+
+        <a href="index.html">
+
+            <span class="material-symbols-outlined">
+                home
+            </span>
+
+            Inicio
+
+        </a>
+
+        <a href="../HTML/productos.html">
+
+            <span class="material-symbols-outlined">
+                liquor
+            </span>
+
+            Productos
+
+        </a>
+
+         <a href="recursos-humanos.html">
+                <span class="material-symbols-outlined">
+                    groups
+                </span>
+                Recursos Humanos
+            </a>
+
+            <a href="../HTML/noticias.html">
+                <span class="material-symbols-outlined">
+                    campaign
+                </span>
+                Noticias
+            </a>
+
+            <a href="../HTML/sugerencias.html" class="active">
+                <span class="material-symbols-outlined">
+                    markunread_mailbox
+                </span>
+                Sugerencias
+            </a>
+
+    </nav>
+
+</header>
+
+<!-- =========================
+        BANNER
+========================= -->
+
+<section class="banner">
+
+    <div class="overlay"></div>
+
+    <img src="../img/banner_sugerencias.png" alt="Banner">
+
+    <div class="banner-content">
+
+        <h1>
+             Buzón de Sugerencias
+        </h1>
+
+        <p>
+           Comparte tus ideas, comentarios y propuestas para ayudarnos a mejorar.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- =========================
+        FORMULARIO
+========================= -->
+
+<!-- =========================
+        FORMULARIO
+========================= -->
+
+<section class="sugerencias-section">
+
+    <div class="form-lado">
+
+        <h2 class="form-titulo">Envíanos tu Opinion</h2>
+        <p class="form-subtitulo">cuéntanos tu problema o en que podemos mejorar!</p>
+
+        <form id="formSugerencia">
+
+            <div class="input-group">
+                <label>Nombre Completo</label>
+                <div class="input-icon">
+                    <span class="material-symbols-outlined">person</span>
+                    <input type="text" id="nombre" required maxlength="100"
+                           placeholder="escribe tu nombre completo">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Correo Electrónico</label>
+                <div class="input-icon">
+                    <span class="material-symbols-outlined">mail</span>
+                    <input type="email" id="correo" required maxlength="100"
+                           placeholder="ejemplo: juan123@correo.com">
+                </div>
+                <span id="correoError" class="error"></span>
+            </div>
+
+            <div class="input-group">
+                <label>Asunto</label>
+                <div class="input-icon">
+                    <span class="material-symbols-outlined">description</span>
+                    <input type="text" id="asunto" required maxlength="100"
+                           placeholder="escribe el asunto de tu sugerencia">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Mensaje</label>
+                <div class="input-icon textarea-icon">
+                    <span class="material-symbols-outlined">chat</span>
+                    <textarea id="mensaje" required maxlength="500"
+                              placeholder="escribe tu sugerencia o comentario a calificar"></textarea>
+                </div>
+                <div class="contador">
+                    <span id="contador">0</span>/500 caracteres
+                </div>
+            </div>
+
+            <button type="submit" class="btn-enviar">
+                Enviar sugerencia
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="imagen-lado">
+        <img src="../img/baner form 2.png" alt="">
+    </div>
+
+</section>
+
+<!-- MODAL -->
+
+<div class="modal" id="modalExito">
+
+    <div class="modal-content">
+
+        <div class="check">✓</div>
+
+        <h2>Sugerencia enviada</h2>
+
+        <p>
+            Su sugerencia ha sido enviada correctamente.
+        </p>
+
+        <button id="cerrarModal">
+            Aceptar
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================
+        FOOTER
+========================= -->
+
+<footer class="footer">
+    <div class="footer-container">
+
+        <!-- informacion -->
+
+        <div class="footer-box">
+
+            <h3>Comercializadora El Ingenio</h3>
+
+            <p>
+                Empresa mexicana enfocada en la producción y comercialización
+de derivados de la caña de azúcar, integrando innovación,
+calidad y compromiso con la industria.
+            </p>
+
+        </div>
+
+        <!-- contacto -->
+
+        <div class="footer-box">
+
+            <h3>Contacto</h3>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Carretera Córdoba – Paso del Macho Km 8,
+Potrero Nuevo, Municipio de Atoyac, Veracruz, México.
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                273 734 4050
+            </p>
+
+            <P>
+                <i class="fa-solid fa-envelope"></i>
+                asistencia@comercializadoraelingenio.com
+            </P>
+
+        </div>
+
+    </div>
+
+    <!-- redes -->
+
+    <div class="footer-social">
+
+         <a href="#">
+            <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a href="#">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a href="#">
+            <i class="fa-brands fa-youtube"></i>
+        </a>
+
+    </div>
+
+    <!-- copirigt -->
+
+    <div class="footer-copy">
+
+        <p>
+            © 2026 Comercializadora El Ingenio |
+            Todos los derechos reservados
+        </p>
+
+    </div>
+
+</footer>
+
+<script src="../JS/panel/alerts.js"></script>
+<script src="../JS/sugerencias.js"></script>
+
+
+</body>
+</html>
