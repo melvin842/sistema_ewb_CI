@@ -32,9 +32,7 @@ initImagenPrincipal('imagenPrincipal', 'inputImagenPrincipal', (src) => {
     const m   = String(hoy.getMonth() + 1).padStart(2, '0');
     const d   = String(hoy.getDate()).padStart(2, '0');
 
-    if(!modoEditar){
         inputFechaCierre.min = `${y}-${m}-${d}`;
-    }
 })();
 
 // ════════════════════════════════════════════════════════════
@@ -236,6 +234,16 @@ formVacante.addEventListener('submit', async (e) => {
         UIAlert.toast('Selecciona una fecha de cierre.', 'warning');
         return;
     }
+
+    const fechaSeleccionada = new Date(inputFechaCierre.value);
+const hoy = new Date();
+hoy.setHours(0,0,0,0);
+fechaSeleccionada.setHours(0,0,0,0);
+
+if(fechaSeleccionada < hoy){
+    UIAlert.toast('La fecha de cierre no puede ser anterior al día de hoy.', 'warning');
+    return;
+}
 
     const imgFileValidar = document.getElementById('inputImagenPrincipal').files[0];
     if(!modoEditar && !imgFileValidar){

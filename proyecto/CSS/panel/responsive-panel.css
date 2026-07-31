@@ -1,0 +1,224 @@
+/* ════════════════════════════════════════════════════════════
+   1. MONITORES MUY GRANDES (1600px en adelante)
+   Evita que el contenido se estire demasiado y quede disperso
+   en monitores ultra-anchos o de alta resolución.
+════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1600px) {
+
+    .content {
+        max-width: 1700px;
+        margin-left: 250px;
+        margin-right: auto;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .news-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   2. LAPTOPS PEQUEÑAS / TABLETS HORIZONTAL (1024px - 1300px)
+   La sidebar sigue completa, pero se ajustan grids de 2
+   columnas (formularios, noticias+clima) para que no se
+   sientan apretados antes de llegar al punto de colapso.
+════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1300px) {
+
+    .noticias-layout {
+        grid-template-columns: 1fr 260px;
+    }
+
+    .form-grid {
+        grid-template-columns: 240px 1fr;
+        gap: 22px;
+    }
+
+    .vacante-grid,
+    .noticia-grid {
+        grid-template-columns: 200px 1fr;
+        gap: 22px 24px;
+    }
+}
+
+@media (max-width: 1100px) {
+
+    /* La columna del clima ya se apila abajo desde aquí en tu
+       propio CSS de noticias — la dejamos intacta */
+
+    .stats {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   3. TABLETS VERTICAL (900px)
+   Coincide con el breakpoint donde sidebar.css ya reduce la
+   barra lateral a solo íconos. Aquí reforzamos que el resto
+   del contenido no se rompa en ese mismo punto.
+════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+
+    .form-grid,
+    .vacante-grid,
+    .noticia-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .vacante-preview,
+    .noticia-preview {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .imagen-box,
+    .noticia-grid .imagen-box {
+        grid-column: 1;
+        grid-row: auto;
+        max-width: 100%;
+    }
+
+    .form-fields,
+    .noticia-grid .form-fields {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .imagen-principal {
+        max-width: 100%;
+    }
+
+    .preview-card {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    .topbar {
+        padding: 15px;
+    }
+
+    .topbar h1 {
+        font-size: 20px;
+    }
+
+    .perfil-card {
+        max-width: 100%;
+        padding: 25px;
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   4. TABLETS PEQUEÑAS / MÓVIL HORIZONTAL (700px)
+   Refuerza y completa los ajustes que ya existen en cada CSS
+   de página en este mismo breakpoint.
+════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+
+    /* Tablas: en vez de forzar scroll horizontal incómodo,
+       reduce el tamaño de fuente y padding para que quepa más */
+    table {
+        min-width: 0;
+        width: 100%;
+    }
+
+    thead th,
+    tbody td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+
+    .cell-img img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .acciones {
+        gap: 6px;
+    }
+
+    .acciones .material-symbols-outlined {
+        font-size: 16px;
+    }
+
+    /* Formularios: campos en una sola columna ya lo maneja
+       form-base.css, aquí solo ajustamos espaciados */
+    .form-container {
+        padding: 16px;
+    }
+
+    .estado-opcion {
+        min-width: 100%;
+    }
+
+    /* Vista previa de vacante/noticia centrada y más angosta */
+    .preview-card {
+        max-width: 220px;
+    }
+
+    /* Perfil */
+    .perfil-foto-wrap {
+        width: 100px;
+        height: 100px;
+    }
+
+    .perfil-foto-wrap img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .perfil-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .perfil-acciones .btn-secundario,
+    .perfil-acciones .btn-guardar {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* User dropdown no se salga de la pantalla */
+    .user-dropdown {
+        right: -10px;
+        min-width: 210px;
+    }
+
+    /* Postulaciones: grid de datos en una columna */
+    .post-ver-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+    5. AJUSTES TRANSVERSALES 
+════════════════════════════════════════════════════════════ */
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+}
+
+.content,
+.form-container,
+.table-wrapper,
+.perfil-card {
+    max-width: 100%;
+}

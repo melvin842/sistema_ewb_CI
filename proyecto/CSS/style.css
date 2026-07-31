@@ -305,35 +305,16 @@ body{
 /* IMAGENES */
 
 .about-img{
-    display: grid;
-
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 180px 180px;
-
-    gap: 15px;
-
     flex: 1;
-    
-
 }
-
-/* TODAS LAS IMAGENES */
 
 .about-img img{
-    width: 170%;
-    height: 170%;
-
+    width: 100%;
+    height: 375px;
     object-fit: cover;
-
     border-radius: 18px;
-
     box-shadow: 0 10px 25px #00000020;
-}
-
-/* IMAGEN GRANDE */
-
-.about-img img:first-child{
-    grid-row: 1 / 1;
+    display: block;
 }
 
 /* TEXTO */

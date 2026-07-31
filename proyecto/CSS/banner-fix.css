@@ -1,0 +1,74 @@
+
+/* ════════════════════════════════════════════════════════════
+   1. VENTANA DE ALTURA MEDIA (700px - 750px de alto)
+   Cubre laptops comunes (1366x768) y monitores en ventana
+   no maximizada. Reduce el texto lo suficiente para que quepa
+   completo debajo del header sin tocar los breakpoints de
+   ancho que ya usas para celular/tablet.
+════════════════════════════════════════════════════════════ */
+
+@media (max-height: 750px) and (min-width: 701px) {
+
+    .banner-content h1 {
+        font-size: 52px;
+        margin-bottom: 18px;
+    }
+
+    .banner-content p {
+        font-size: 20px;
+    }
+
+    .btn-banner {
+        padding: 13px 26px;
+        font-size: 16px;
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   2. VENTANA MUY BAJA (600px de alto o menos)
+   Para monitores externos usados en modo horizontal con poca
+   altura, o navegador con muchas barras de herramientas
+   visibles reduciendo el viewport.
+════════════════════════════════════════════════════════════ */
+
+@media (max-height: 600px) and (min-width: 701px) {
+
+    .banner-content h1 {
+        font-size: 38px;
+        margin-bottom: 12px;
+        line-height: 1.15;
+    }
+
+    .banner-content p {
+        font-size: 17px;
+    }
+
+    .btn-banner {
+        padding: 11px 22px;
+        font-size: 15px;
+    }
+
+    /* Si aun así no cupiera, garantiza un margen de seguridad
+       para que nunca quede pegado o detrás del header */
+    .banner-content {
+        top: 55%;
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   3. SEGURO ADICIONAL — nunca permitir que el contenido del
+   banner empiece antes de que termine el header, sin importar
+   la combinación de alto/ancho.
+════════════════════════════════════════════════════════════ */
+
+@media (min-width: 701px) {
+
+    .banner-content {
+        /* Si el 50% calculado cae muy arriba, usa 150px desde
+           el tope de .banner (justo debajo del header) como
+           mínimo — lo que sea más alto de los dos. */
+        top: max(50%, 150px);
+    }
+}

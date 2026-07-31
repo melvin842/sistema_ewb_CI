@@ -285,6 +285,22 @@ formPost.addEventListener('submit', async (e) => {
         return;
     }
 
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correoRegex.test(correo)) {
+        mostrarErrorPost('Por favor ingresa un correo electrónico válido.');
+        return;
+    }
+
+    if (telefono && !/^\d+$/.test(telefono)) {
+        mostrarErrorPost('El teléfono solo debe contener números.');
+        return;
+    }
+
+    if (!idRHActual) {
+        mostrarErrorPost('No se pudo identificar la vacante. Intenta de nuevo.');
+        return;
+    }
+
     // ✅ Ahora idRHActual siempre tiene el id real de la BD
     if (!idRHActual) {
         mostrarErrorPost('No se pudo identificar la vacante. Intenta de nuevo.');
