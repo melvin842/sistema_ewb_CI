@@ -114,7 +114,7 @@ async function cargarProductos(){
 function crearCard(p, galeria){
 
     const imgSrc = p.imagen
-        ? p.imagen                                  // ya es la URL completa de Cloudinary
+        ? p.imagen 
         : LOGO_DEFAULT;
 
     const todasImgs     = [];
@@ -124,12 +124,7 @@ function crearCard(p, galeria){
     todasCaptions.push(p.nombre);
 
     galeria.forEach(item => {
-        todasImgs.push(item.imagen);               
-        todasCaptions.push(item.descripcion || 'Imagen del producto');
-    });
-
-    galeria.forEach(item => {
-        todasImgs.push(`${API}/img/productos/${item.imagen}`);
+        todasImgs.push(item.imagen);
         todasCaptions.push(item.descripcion || 'Imagen del producto');
     });
 
