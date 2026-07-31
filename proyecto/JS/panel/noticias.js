@@ -43,15 +43,13 @@ async function cargarNoticias(){
             titulo:    n.titulo,
             categoria: n.categoria,
             extracto:  n.contenido.length > 100
-                           ? n.contenido.substring(0, 100) + '...'
-                           : n.contenido,
+                ? n.contenido.substring(0, 100) + '...'
+                : n.contenido,
             fecha:     n.fecha_publicacion
-                           ? new Date(n.fecha_publicacion).toLocaleDateString('es-MX')
-                           : '---',
+                ? new Date(n.fecha_publicacion).toLocaleDateString('es-MX')
+                : '---',
             estado:    n.estado,
-            img:       n.imagen
-                           ? `${API}/img/noticias/${n.imagen}`
-                           : '../../img/logo_ci.png'
+            img:       n.imagen || '../../img/logo_ci.png'          // ya es la URL completa
         }));
 
         renderCards();

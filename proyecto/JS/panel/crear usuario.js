@@ -18,7 +18,7 @@
         return;
     }
 
-    // Solo administradores pueden ver esta página
+    
     if (sesion.rol !== 'administrador') {
         window.location.replace('dashboard.html');
         return;
@@ -64,6 +64,20 @@
     const form = document.getElementById('formCrearUsuario');
     const mensaje = document.getElementById('mensajeCrear');
 
+    // ════════════════════════════════════════════════════════════
+    //  VALIDACIONES
+    // ════════════════════════════════════════════════════════════
+
+    function validarCorreoUsuario(email){
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email.trim());
+    }
+
+    function mostrarErrorCrear(texto){
+        mensaje.textContent = texto;
+        mensaje.className = 'mensaje-perfil error';
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         mensaje.textContent = '';
@@ -77,6 +91,37 @@
             rol: document.getElementById('nuevoRol').value,
             rol_solicitante: sesion.rol
         };
+
+        // ─── VALIDACIONES DE CAMPOS ──────────────────────
+        if(!payload.nombre || payload.nombre.length < 3){
+            mostrarErrorCrear('El nombre de usuario debe tener al menos 3 caracteres.');
+            return;
+        }
+
+        if(/\s/.test(payload.nombre)){
+            mostrarErrorCrear('El nombre de usuario no puede contener espacios.');
+            return;
+        }
+
+        if(!payload.nombre_completo || payload.nombre_completo.length < 3){
+            mostrarErrorCrear('Ingresa el nombre completo (mínimo 3 caracteres).');
+            return;
+        }
+
+        if(!payload.correo || !validarCorreoUsuario(payload.correo)){
+            mostrarErrorCrear('Ingresa un correo electrónico válido.');
+            return;
+        }
+
+        if(!payload.contrasena || payload.contrasena.length < 8){
+            mostrarErrorCrear('La contraseña debe tener al menos 8 caracteres.');
+            return;
+        }
+
+        if(!payload.rol){
+            mostrarErrorCrear('Selecciona un rol para el usuario.');
+            return;
+        }
 
         try {
             const resp = await fetch(`${API}/usuario`, {

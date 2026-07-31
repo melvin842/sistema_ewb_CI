@@ -79,7 +79,29 @@
     let camposEditados = { nombreCompleto: false, correo: false };
 
     // ════════════════════════════════════════════════════════════
-    //  MODO (?modo=ver | ?modo=editar)
+    //  VALIDACIONES
+    // ════════════════════════════════════════════════════════════
+
+    const TIPOS_FOTO_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+    const TAMANO_FOTO_MAXIMO    = 5 * 1024 * 1024; // 5 MB
+
+    function validarCorreoPerfil(email){
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email.trim());
+    }
+
+    function validarFotoPerfil(file){
+        if(!TIPOS_FOTO_PERMITIDOS.includes(file.type)){
+            return 'Solo se permiten imágenes JPG, PNG o WEBP.';
+        }
+        if(file.size > TAMANO_FOTO_MAXIMO){
+            return 'La imagen no debe superar los 5 MB.';
+        }
+        return '';
+    }
+
+    // ════════════════════════════════════════════════════════════
+    //  MODO 
     // ════════════════════════════════════════════════════════════
 
     const params = new URLSearchParams(window.location.search);
@@ -106,11 +128,11 @@
             valNombre.textContent = u.nombre || '--';
             valRol.textContent    = u.rol || '--';
 
-            fotoPerfil.src = u.foto_perfil
-                ? `${API}/img/perfil/${u.foto_perfil}`
-                : '../../img/logo_ci.png';
+            fotoPerfil.src = u.foto_perfil || '../../img/logo_ci.png';   
 
-            // refresca la sesión guardada por si cambió algo
+            fotoPerfil.src = u.foto_perfil || '../../img/logo_ci.png';
+            fotoPerfil.onerror = () => { fotoPerfil.src = '../../img/logo_ci.png'; };
+
             sesion = { ...sesion, ...u };
             sessionStorage.setItem('usuario', JSON.stringify(sesion));
 
@@ -156,6 +178,14 @@
     inputFoto.addEventListener('change', () => {
         const archivo = inputFoto.files[0];
         if(!archivo) return;
+
+        const errorFoto = validarFotoPerfil(archivo);
+        if(errorFoto){
+            mostrarMensaje(errorFoto, 'error');
+            inputFoto.value = '';
+            return;
+        }
+
         archivoFotoNuevo = archivo;
         fotoPerfil.src = URL.createObjectURL(archivo);
         btnGuardar.hidden = false;
@@ -186,15 +216,34 @@
         e.preventDefault();
         mostrarMensaje('', '');
 
+        const nombreCompletoVal = inputNombreCompleto.value.trim() || valNombreCompleto.textContent.trim();
+        const correoVal         = inputCorreo.value.trim() || valCorreo.textContent.trim();
+
+        // ─── VALIDACIONES DE CAMPOS EDITABLES ────────────
+        if(camposEditados.nombreCompleto && nombreCompletoVal.length < 3){
+            mostrarMensaje('El nombre completo debe tener al menos 3 caracteres.', 'error');
+            return;
+        }
+
+        if(camposEditados.correo && !validarCorreoPerfil(correoVal)){
+            mostrarMensaje('Ingresa un correo electrónico válido.', 'error');
+            return;
+        }
+
         const nuevaContrasena = inputContrasenaNueva.value.trim();
         if(nuevaContrasena && !inputContrasenaActual.value.trim()){
             mostrarMensaje('Ingresa tu contraseña actual para poder cambiarla.', 'error');
             return;
         }
 
+        if(nuevaContrasena && nuevaContrasena.length < 8){
+            mostrarMensaje('La nueva contraseña debe tener al menos 8 caracteres.', 'error');
+            return;
+        }
+
         const formData = new FormData();
-        formData.append('nombre_completo', inputNombreCompleto.value.trim() || valNombreCompleto.textContent);
-        formData.append('correo', inputCorreo.value.trim() || valCorreo.textContent);
+        formData.append('nombre_completo', nombreCompletoVal);
+        formData.append('correo', correoVal);
 
         if(archivoFotoNuevo) formData.append('foto_perfil', archivoFotoNuevo);
         if(nuevaContrasena){
@@ -221,7 +270,6 @@
 
             mostrarMensaje('Perfil actualizado correctamente.', 'exito');
 
-            // vuelve a modo "ver"
             valNombreCompleto.textContent = sesion.nombre_completo;
             valNombreCompleto.hidden = false;
             inputNombreCompleto.hidden = true;

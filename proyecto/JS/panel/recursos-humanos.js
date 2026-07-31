@@ -59,10 +59,10 @@ async function cargarVacantes(){
 
         const datos = await res.json();
 
-        vacantes = datos.map(v => ({
+    vacantes = datos.map(v => ({
             id:           v.id_rh,
             puesto:       v.titulo,
-            img:          v.imagen ? `${API}/img/rh/${v.imagen}` : '../../img/logo_ci.png',
+            img:          v.imagen || '../../img/logo_ci.png',    // ya es la URL completa de Cloudinary
             estado:       v.estado,
             registro:     v.fecha_publicacion
                 ? new Date(v.fecha_publicacion).toLocaleDateString('es-MX')

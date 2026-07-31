@@ -1,9 +1,5 @@
 // ════════════════════════════════════════════════════════════
-//  productos-publico.js
-//  Página pública de productos (productos.html)
-//  Carga las cards y el modal desde el backend.
-//  Si el panel admin agrega o edita un producto,
-//  esta página lo refleja automáticamente.
+//  productos-publico
 // ════════════════════════════════════════════════════════════
 
 const API = '';
@@ -118,17 +114,19 @@ async function cargarProductos(){
 function crearCard(p, galeria){
 
     const imgSrc = p.imagen
-        ? `${API}/img/productos/${p.imagen}`
+        ? p.imagen                                  // ya es la URL completa de Cloudinary
         : LOGO_DEFAULT;
 
-    // Prepara los datos del modal:
-    // La imagen principal siempre va primero.
-    // Después van las imágenes de la galería.
     const todasImgs     = [];
     const todasCaptions = [];
 
     todasImgs.push(imgSrc);
     todasCaptions.push(p.nombre);
+
+    galeria.forEach(item => {
+        todasImgs.push(item.imagen);               
+        todasCaptions.push(item.descripcion || 'Imagen del producto');
+    });
 
     galeria.forEach(item => {
         todasImgs.push(`${API}/img/productos/${item.imagen}`);
@@ -156,7 +154,7 @@ function crearCard(p, galeria){
         </div>
     `;
 
-    // Abre el modal al hacer clic en "Más información"
+
     card.querySelector('.more-info').addEventListener('click', (e) => {
         e.preventDefault();
         abrirModal(p, todasImgs, todasCaptions);
@@ -173,8 +171,6 @@ function abrirModal(p, imgs, captions){
 
     modalTitle.textContent = p.nombre;
 
-    // Descripción con HTML enriquecido si viene del backend,
-    // o texto plano si no.
     modalDesc.innerHTML = p.descripcion
         ? `<p>${p.descripcion}</p>`
         : '';

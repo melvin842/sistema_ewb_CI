@@ -25,6 +25,31 @@ function validarCorreo(email){
     return re.test(email);
 }
 
+// =========================
+// VALIDACIONES DE CAMPOS
+// =========================
+
+const LIMITES = {
+    nombre:  { min: 2,  max: 80 },
+    asunto:  { min: 3,  max: 100 },
+    mensaje: { min: 10, max: 500 }
+};
+
+
+function validarCampo(id, valor){
+    const v = valor.trim();
+    const limite = LIMITES[id];
+
+    if(!v) return 'Este campo es obligatorio.';
+    if(limite && v.length < limite.min){
+        return `Debe tener al menos ${limite.min} caracteres.`;
+    }
+    if(limite && v.length > limite.max){
+        return `No puede superar los ${limite.max} caracteres.`;
+    }
+    return '';
+}
+
 correoInput.addEventListener('input', () => {
     if(correoInput.value && !validarCorreo(correoInput.value)){
         correoError.textContent = 'Ingresa un correo electrónico válido.';
@@ -47,17 +72,42 @@ document.querySelectorAll('#formSugerencia input, #formSugerencia textarea')
 // ENVÍO DEL FORMULARIO
 // =========================
 
-let enviandoFormulario = false; // Prevenir doble envío
+let enviandoFormulario = false; 
 
 formulario.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // ─── PREVENIR DOBLE ENVÍO ────────────────────────────
+
     if(enviandoFormulario) return;
     enviandoFormulario = true;
-    // ─────────────────────────────────────────────────────
+
 
     correoError.textContent = '';
+
+    const camposAValidar = [
+        { id: 'nombre',  el: document.getElementById('nombre') },
+        { id: 'asunto',  el: document.getElementById('asunto') },
+        { id: 'mensaje', el: mensaje }
+    ];
+
+    let primerCampoInvalido = null;
+
+    for(const campo of camposAValidar){
+        const error = validarCampo(campo.id, campo.el.value);
+        if(error){
+            campo.el.style.borderColor = '#cc0000';
+            if(!primerCampoInvalido) primerCampoInvalido = { el: campo.el, mensaje: error };
+        } else {
+            campo.el.style.borderColor = '#ddd';
+        }
+    }
+
+    if(primerCampoInvalido){
+        UIAlert.toast(primerCampoInvalido.mensaje, 'error');
+        primerCampoInvalido.el.focus();
+        enviandoFormulario = false;
+        return;
+    }
 
     if(!validarCorreo(correoInput.value)){
         correoError.textContent = 'Ingresa un correo electrónico válido.';
@@ -70,14 +120,12 @@ formulario.addEventListener('submit', async (e) => {
     btn.textContent = 'Enviando...';
     btn.disabled    = true;
 
-    // ─── DATOS DEL FORMULARIO ────────────────────────────
     const datos = {
         nombre:  document.getElementById('nombre').value.trim(),
         correo:  correoInput.value.trim(),
         asunto:  document.getElementById('asunto').value.trim(),
         mensaje: mensaje.value.trim()
     };
-    // ─────────────────────────────────────────────────────
 
     try {
 
@@ -111,12 +159,11 @@ formulario.addEventListener('submit', async (e) => {
 
         console.error('Error al enviar sugerencia:', error);
 
-        // ─── ALERTA DE ERROR CON UIAlert ──
+        
         UIAlert.toast(
             'Ocurrió un error al enviar tu sugerencia. Inténtalo de nuevo.',
             'error'
         );
-        // ──────────────────────────────────
 
     } finally {
         btn.textContent = 'Enviar sugerencia';
@@ -130,7 +177,7 @@ formulario.addEventListener('submit', async (e) => {
 // =========================
 
 function mostrarExito(){
-    // ─── USAR UIAlert EN LUGAR DE MODAL MANUAL ───
+
     UIAlert.alert({
         icon: 'mail',
         iconType: 'success',
@@ -138,7 +185,7 @@ function mostrarExito(){
         message: 'Tu sugerencia ha sido recibida correctamente. Gracias por tu aporte.',
         btnOk: 'Aceptar'
     }).then(() => {
-        // Limpiar formulario después de cerrar el modal
+
         formulario.reset();
         contador.textContent = '0';
         contador.style.color = '#aaa';
@@ -148,7 +195,7 @@ function mostrarExito(){
 }
 
 // =========================
-// CERRAR MODAL (FALLBACK)
+// CERRAR MODAL 
 // =========================
 
 if(cerrarModal){

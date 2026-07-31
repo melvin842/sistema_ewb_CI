@@ -14,7 +14,7 @@ function obtenerPaginaInicio(){
         const usuario = JSON.parse(usuarioRaw);
         return paginaInicioPorRol[usuario.rol] || 'dashboard.html';
     } catch(e){
-        // sesión vieja guardada como texto plano, no como JSON
+        
         return 'dashboard.html';
     }
 }
@@ -28,10 +28,10 @@ async function verificarSesion(){
             const destino = obtenerPaginaInicio();
             if(destino) window.location.replace(destino);
         } else {
-            sessionStorage.removeItem("usuario"); // limpia sesión vieja inválida
+            sessionStorage.removeItem("usuario"); 
         }
     } catch(e){
-        // servidor no disponible, no redirigir
+        
     }
 }
 
@@ -43,12 +43,27 @@ window.addEventListener("pageshow", function(event){
     }
 });
 
+function validarCorreoLogin(email){
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.trim());
+}
+
 document.getElementById("loginForm").addEventListener("submit", async function(e){
     e.preventDefault();
-    const correo = document.getElementById("correo").value;
+    const correo = document.getElementById("correo").value.trim();
     const contrasena = document.getElementById("contrasena").value;
 
-    // Deshabilitar el botón mientras se procesa, para evitar doble envío
+    // ─── VALIDACIÓN DE CAMPOS ────────────────────────────
+    if(!correo || !contrasena){
+        UIAlert.toast('Ingresa tu correo y contraseña.', 'error');
+        return;
+    }
+
+    if(!validarCorreoLogin(correo)){
+        UIAlert.toast('Ingresa un correo electrónico válido.', 'error');
+        return;
+    }
+
     const btnSubmit = e.target.querySelector('button[type="submit"]');
     const textoOriginal = btnSubmit.textContent;
     btnSubmit.disabled = true;
@@ -78,7 +93,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
         }else{
 
-            // Correo o contraseña incorrectos (u otro error de validación del servidor)
+            // Correo o contraseña incorrectos 
             await UIAlert.alert({
                 icon: 'error',
                 iconType: 'error',

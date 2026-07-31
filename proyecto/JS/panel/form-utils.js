@@ -1,4 +1,30 @@
 // =========================
+//  VALIDACIÓN DE IMÁGENES 
+// =========================
+
+const TIPOS_IMAGEN_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+const TAMANO_IMAGEN_MAXIMO    = 5 * 1024 * 1024; // 5 MB
+
+function validarImagen(file){
+    if(!file) return 'Selecciona una imagen.';
+    if(!TIPOS_IMAGEN_PERMITIDOS.includes(file.type)){
+        return 'Solo se permiten imágenes JPG, PNG o WEBP.';
+    }
+    if(file.size > TAMANO_IMAGEN_MAXIMO){
+        return 'La imagen no debe superar los 5 MB.';
+    }
+    return '';
+}
+
+function mostrarErrorImagen(msg){
+    if(typeof UIAlert !== 'undefined'){
+        UIAlert.toast(msg, 'error');
+    } else {
+        alert(msg);
+    }
+}
+
+// =========================
 //  MANEJO DE IMAGEN PRINCIPAL
 // =========================
 
@@ -13,6 +39,13 @@ function initImagenPrincipal(boxId, inputId, onChange){
 
         const file = e.target.files[0];
         if(!file) return;
+
+        const errorImg = validarImagen(file);
+        if(errorImg){
+            mostrarErrorImagen(errorImg);
+            input.value = '';
+            return;
+        }
 
         const reader = new FileReader();
 
@@ -55,7 +88,17 @@ function initGaleriaExtra(galeriaId, inputId, maxImagenes = 5){
         const archivos = Array.from(e.target.files);
         const actuales = galeria.querySelectorAll('.galeria-item').length;
 
+        if(archivos.length > (maxImagenes - actuales)){
+            mostrarErrorImagen(`Solo puedes agregar hasta ${maxImagenes} imágenes en total.`);
+        }
+
         archivos.slice(0, maxImagenes - actuales).forEach(file => {
+
+            const errorImg = validarImagen(file);
+            if(errorImg){
+                mostrarErrorImagen(`${file.name}: ${errorImg}`);
+                return;
+            }
 
             const reader = new FileReader();
 
@@ -64,12 +107,11 @@ function initGaleriaExtra(galeriaId, inputId, maxImagenes = 5){
                 const item     = document.createElement('div');
                 item.className = 'galeria-item';
 
-                // Preview de la imagen
+
                 const img  = document.createElement('img');
                 img.src    = ev.target.result;
                 img._file  = file; 
 
-                // Botón quitar
                 const btnRemove     = document.createElement('button');
                 btnRemove.type      = 'button';
                 btnRemove.className = 'remove-img';
@@ -98,7 +140,7 @@ function initGaleriaExtra(galeriaId, inputId, maxImagenes = 5){
 }
 
 // =========================
-//  OBTENER ?id= DE LA URL
+//  OBTENER id= DE LA URL
 // =========================
 
 function obtenerIdDeURL(){

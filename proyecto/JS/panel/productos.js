@@ -5,18 +5,18 @@ function obtenerIdDeURL(){
 }
 
 // ════════════════════════════════════════════════════════════
-//  BLOQUE 1 — LISTADO (productos.html)
+//  BLOQUE 1 — LISTADO 
 // ════════════════════════════════════════════════════════════
 
 if(document.getElementById('tablaProductos')){
 
     let productos = [];
 
-    // ✅ Formatea fecha de BD 
+
     function formatearFecha(valor){
         if(!valor) return '---';
         const fecha = new Date(valor);
-        // Corrige desfase de zona horaria (DATE viene como medianoche UTC)
+        
         const fechaLocal = new Date(fecha.getTime() + fecha.getTimezoneOffset() * 60000);
         return fechaLocal.toLocaleDateString('es-MX', {
             day:   '2-digit',
@@ -31,14 +31,13 @@ if(document.getElementById('tablaProductos')){
             if(!respuesta.ok) throw new Error('Error al obtener productos');
             const data = await respuesta.json();
             productos = data.map(p => ({
-                id:       p.id_producto,
-                nombre:   p.nombre,
-                tipo:     p.tipo,
-                estado:   p.estado,
-                img:      `/img/productos/${p.imagen}`,
-                // ✅ La columna en BD se llama "fecha" (antes motivo_baja)
-                registro: formatearFecha(p.fecha)
-            }));
+    id:       p.id_producto,
+    nombre:   p.nombre,
+    tipo:     p.tipo,
+    estado:   p.estado,
+    img:      p.imagen,                                // ← ya es la URL completa de Cloudinary
+    registro: formatearFecha(p.fecha)
+}));
             renderTabla();
         } catch(error){
             console.error('Error cargando productos:', error);
@@ -220,14 +219,14 @@ if(document.getElementById('formProducto')){
         if(radioEstado) radioEstado.checked = true;
 
         if(p.imagen){
-            const box         = document.getElementById('imagenPrincipal');
-            const placeholder = box.querySelector('.placeholder');
-            let img           = box.querySelector('img');
-            if(!img){ img = document.createElement('img'); box.appendChild(img); }
-            img.src     = `/img/productos/${p.imagen}`;
-            img.onerror = () => { img.src = '../../img/logo_ci.png'; };
-            if(placeholder) placeholder.style.display = 'none';
-        }
+    const box         = document.getElementById('imagenPrincipal');
+    const placeholder = box.querySelector('.placeholder');
+    let img           = box.querySelector('img');
+    if(!img){ img = document.createElement('img'); box.appendChild(img); }
+    img.src     = p.imagen;                            
+    img.onerror = () => { img.src = '../../img/logo_ci.png'; };
+    if(placeholder) placeholder.style.display = 'none';
+}
 
         if(Array.isArray(p.galeria) && p.galeria.length > 0){
             const galeria = document.getElementById('galeriaExtra');
@@ -235,11 +234,11 @@ if(document.getElementById('formProducto')){
             p.galeria.forEach(item => {
                 const div      = document.createElement('div');
                 div.className  = 'galeria-item';
-                div.dataset.idImagen = item.id; // 👈 necesario para editar/eliminar en el servidor
+                div.dataset.idImagen = item.id; 
 
                 const img      = document.createElement('img');
-                img.src        = `/img/productos/${item.imagen}`;
-                img.onerror    = () => { img.src = '../../img/logo_ci.png'; };
+img.src        = item.imagen;                          
+img.onerror    = () => { img.src = '../../img/logo_ci.png'; };
 
                 const btnRemove     = document.createElement('button');
                 btnRemove.type      = 'button';
@@ -297,8 +296,31 @@ if(document.getElementById('formProducto')){
             estado:           document.querySelector('input[name="estado"]:checked').value
         };
 
-        if(!datos.nombre || !datos.tipo || !datos.descripcion){
-            UIAlert.toast('Completa todos los campos obligatorios.', 'warning');
+        // ─── VALIDACIONES DE CAMPOS ──────────────────────
+        if(!datos.nombre || datos.nombre.length < 3){
+            UIAlert.toast('El nombre del producto debe tener al menos 3 caracteres.', 'warning');
+            return;
+        }
+
+        if(!datos.tipo){
+            UIAlert.toast('Selecciona el tipo de producto.', 'warning');
+            return;
+        }
+
+        if(!datos.descripcion || datos.descripcion.length < 20){
+            UIAlert.toast('La descripción debe tener al menos 20 caracteres.', 'warning');
+            return;
+        }
+
+        if(datos.descripcionCorta && datos.descripcionCorta.length > 150){
+            UIAlert.toast('La descripción corta no debe superar los 150 caracteres.', 'warning');
+            return;
+        }
+
+
+        const imgPrincipalValidar = document.getElementById('inputImagenPrincipal').files[0];
+        if(!modoEditar && !imgPrincipalValidar){
+            UIAlert.toast('Selecciona una imagen principal para el producto.', 'warning');
             return;
         }
 
@@ -317,10 +339,9 @@ if(document.getElementById('formProducto')){
         const inputImgPrincipal = document.getElementById('inputImagenPrincipal');
         if(inputImgPrincipal.files[0]) formData.append('imagen', inputImgPrincipal.files[0]);
 
-        // ── Separamos: imágenes NUEVAS (con archivo) vs EXISTENTES (solo su descripción puede cambiar)
         const galeriaItems = document.querySelectorAll('#galeriaExtra .galeria-item');
         const actualizacionesExistentes = [];
-        let indiceArchivoNuevo = 0; // 👈 contador independiente, solo cuenta archivos reales
+        let indiceArchivoNuevo = 0; 
 
         galeriaItems.forEach(item => {
             const img      = item.querySelector('img');
@@ -328,12 +349,12 @@ if(document.getElementById('formProducto')){
             const idImagen = item.dataset.idImagen;
 
             if(img && img._file){
-                // Imagen nueva → se sube junto con el resto del formulario
+
                 formData.append('galeria', img._file);
                 formData.append(`galeria_desc_${indiceArchivoNuevo}`, desc ? desc.value.trim() : '');
                 indiceArchivoNuevo++;
             } else if(idImagen){
-                // Imagen que ya existía → solo actualizamos su descripción, aparte
+                
                 actualizacionesExistentes.push({ idImagen, descripcion: desc ? desc.value.trim() : '' });
             }
         });
@@ -349,7 +370,6 @@ if(document.getElementById('formProducto')){
 });
             if(!respuesta.ok) throw new Error('Error al guardar');
 
-            // Guardamos las descripciones editadas de imágenes que ya existían
             await Promise.all(
     actualizacionesExistentes.map(({ idImagen, descripcion }) =>
         fetch(`/productos/galeria/${idImagen}`, {

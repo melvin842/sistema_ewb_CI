@@ -105,22 +105,21 @@ function crearCard(v) {
         }
     }
 
-    // Imagen: usa la del registro o un fallback
     const imgSrc = v.imagen
-        ? `${API}/img/rh/${v.imagen}`
-        : '../img/personal 2.png';
+    ? v.imagen
+    : '../img/personal 2.png';
 
-    // Tipo de jornada desde horario
+
     const tipo = v.horario
         ? (v.horario.toLowerCase().includes('rotativo') ? 'Turno rotativo' : 'Tiempo completo')
         : 'Tiempo completo';
 
-    // Fecha de cierre formateada
+
     const fecha = v.fecha_cierre
         ? new Date(v.fecha_cierre).toLocaleDateString('es-MX')
         : '';
 
-    // Descripción corta (primeros 120 caracteres)
+
     const descCorta = v.descripcion
         ? (v.descripcion.length > 120 ? v.descripcion.substring(0, 120) + '...' : v.descripcion)
         : '';
@@ -128,7 +127,7 @@ function crearCard(v) {
     const card = document.createElement('div');
     card.className = 'vacancy-card';
 
-    // data-* con TODOS los campos necesarios para el modal
+
     card.dataset.id          = v.id_rh;
     card.dataset.titulo      = v.titulo       || '';
     card.dataset.descripcion = v.descripcion  || '';
@@ -167,7 +166,7 @@ const closeModalRH = document.querySelector('.close-modal-rh');
 
 function abrirModalRH(card) {
 
-    // ✅ Aquí ya llega el id_rh real desde la BD
+
     idRHActual = card.dataset.id || null;
 
     document.getElementById('rhModalImg').src                 = card.dataset.img         || '';
@@ -177,7 +176,7 @@ function abrirModalRH(card) {
     document.getElementById('rhModalHorario').textContent     = card.dataset.horario      || '';
     document.getElementById('rhModalSalario').textContent     = card.dataset.salario      || '';
 
-    // Requisitos y ofrecemos con saltos de línea
+
     document.getElementById('rhModalRequisitos').innerHTML =
         (card.dataset.requisitos || '').replace(/\n/g, '<br>');
 
@@ -192,7 +191,7 @@ function abrirModalRH(card) {
     estadoEl.textContent      = textos[estado] || estado;
     estadoEl.style.background = colores[estado] || '#026432';
 
-    // Contacto / botones / mensaje cerrada
+
     const contactoEl  = document.querySelector('.rh-contacto');
     const botonesEl   = document.querySelector('.rh-btns');
     const prevMensaje = document.getElementById('rhMensajeCerrada');

@@ -94,18 +94,17 @@ async function cargarNoticias(){
                 const imgs = [];
 
                 if(n.imagen){
-                    imgs.push(`${API}/img/noticias/${n.imagen}`);
-                }
+    imgs.push(n.imagen);                                  // ya es la URL completa
+}
 
-                // La galería viene como array de objetos con propiedad 'imagen'
                 if(Array.isArray(n.galeria)){
                     n.galeria.forEach(item => {
-                        const rutaImg = item.imagen || item;
-                        if(rutaImg){
-                            imgs.push(`${API}/img/noticias/${rutaImg}`);
-                        }
-                    });
+                    const rutaImg = item.imagen || item;
+                    if(rutaImg){
+                    imgs.push(rutaImg);                            // ya es la URL completa
                 }
+            });
+        }
 
                 if(imgs.length === 0) imgs.push(LOGO_DEFAULT);
 

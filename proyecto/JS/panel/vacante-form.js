@@ -1,6 +1,5 @@
 // ════════════════════════════════════════════════════════════
-//  vacante-form.js
-//  Maneja agregar-vacante.html  y  editar-vacante.html
+//  vacante-form
 // ════════════════════════════════════════════════════════════
 
 const API = '';
@@ -14,7 +13,7 @@ const tituloForm       = document.getElementById('tituloFormulario');
 const btnGuardar       = document.getElementById('btnGuardar');
 const inputFechaCierre = document.getElementById('fechaCierre');
 
-// ✅ UNA SOLA llamada a initImagenPrincipal con callback de preview
+
 initImagenPrincipal('imagenPrincipal', 'inputImagenPrincipal', (src) => {
     const previewImg = document.getElementById('previewImg');
     if(previewImg){
@@ -32,8 +31,7 @@ initImagenPrincipal('imagenPrincipal', 'inputImagenPrincipal', (src) => {
     const y   = hoy.getFullYear();
     const m   = String(hoy.getMonth() + 1).padStart(2, '0');
     const d   = String(hoy.getDate()).padStart(2, '0');
-    // En modo agregar bloquea fechas pasadas
-    // En modo editar no ponemos mínimo para no bloquear fecha existente
+
     if(!modoEditar){
         inputFechaCierre.min = `${y}-${m}-${d}`;
     }
@@ -41,9 +39,6 @@ initImagenPrincipal('imagenPrincipal', 'inputImagenPrincipal', (src) => {
 
 // ════════════════════════════════════════════════════════════
 //  ESTADO AUTOMÁTICO POR FECHA
-//  - Fecha pasada      → Cerrada
-//  - ≤ 7 días restantes → Próxima a Cerrar
-//  - > 7 días           → Disponible
 // ════════════════════════════════════════════════════════════
 
 function calcularEstadoPorFecha(fechaValor){
@@ -68,11 +63,11 @@ function aplicarEstadoAutomatico(){
     const resultado = calcularEstadoPorFecha(val);
     if(!resultado) return;
 
-    // Marca el radio correspondiente
+
     const radio = document.querySelector(`input[name="estado"][value="${resultado.estado}"]`);
     if(radio) radio.checked = true;
 
-    // Muestra mensaje informativo
+
     if(resultado.tipo){
         const el       = document.createElement('div');
         el.id          = 'msgFecha';
@@ -131,20 +126,18 @@ function cargarDatos(v){
     document.getElementById('horario').value     = v.horario     || '';
     document.getElementById('salario').value     = v.salario     || '';
 
-    // Fecha de cierre
+
     if(v.fecha_cierre){
         inputFechaCierre.value = new Date(v.fecha_cierre).toISOString().split('T')[0];
-        // Evalúa el estado actual según la fecha guardada
         aplicarEstadoAutomatico();
     }
 
-    // Estado — si no hay fecha o el admin lo cambió manualmente
+
     const mapaEstado = { disponible:'activo', cerrada:'inactivo', proxima:'proximo' };
     const estadoForm = mapaEstado[v.estado] || 'activo';
     const radio = document.querySelector(`input[name="estado"][value="${estadoForm}"]`);
     if(radio) radio.checked = true;
 
-    // ✅ Ícono
     const selIcono = document.getElementById('icono');
     if(selIcono && v.icono){
         selIcono.value = v.icono;
@@ -158,15 +151,14 @@ function cargarDatos(v){
         selIcono.dispatchEvent(new Event('change'));
     }
 
-    // ✅ Imagen — muestra la actual en el cuadro y en la preview
     if(v.imagen){
-        const box = document.getElementById('imagenPrincipal');
-        const ph  = box.querySelector('.placeholder');
-        let   img = box.querySelector('img');
-        if(!img){ img = document.createElement('img'); box.appendChild(img); }
-        img.src     = `${API}/img/rh/${v.imagen}`;
-        img.onerror = () => { img.src = '../../img/logo_ci.png'; };
-        if(ph) ph.style.display = 'none';
+    const box = document.getElementById('imagenPrincipal');
+    const ph  = box.querySelector('.placeholder');
+    let   img = box.querySelector('img');
+    if(!img){ img = document.createElement('img'); box.appendChild(img); }
+    img.src     = v.imagen;                         // ya es la URL completa
+    img.onerror = () => { img.src = '../../img/logo_ci.png'; };
+    if(ph) ph.style.display = 'none';
 
         const previewImg = document.getElementById('previewImg');
         if(previewImg){
@@ -216,9 +208,38 @@ formVacante.addEventListener('submit', async (e) => {
 
     const titulo      = document.getElementById('puesto').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
+    const requisitos  = document.getElementById('requisitos').value.trim();
+    const horario     = document.getElementById('horario').value.trim();
 
-    if(!titulo || !descripcion){
-        UIAlert.toast('Completa los campos obligatorios.', 'warning');
+    // ─── VALIDACIONES DE CAMPOS ──────────────────────────
+    if(!titulo || titulo.length < 3){
+        UIAlert.toast('El puesto debe tener al menos 3 caracteres.', 'warning');
+        return;
+    }
+
+    if(!descripcion || descripcion.length < 20){
+        UIAlert.toast('La descripción debe tener al menos 20 caracteres.', 'warning');
+        return;
+    }
+
+    if(!requisitos){
+        UIAlert.toast('Ingresa los requisitos de la vacante.', 'warning');
+        return;
+    }
+
+    if(!horario){
+        UIAlert.toast('Ingresa el horario de la vacante.', 'warning');
+        return;
+    }
+
+    if(!inputFechaCierre.value){
+        UIAlert.toast('Selecciona una fecha de cierre.', 'warning');
+        return;
+    }
+
+    const imgFileValidar = document.getElementById('inputImagenPrincipal').files[0];
+    if(!modoEditar && !imgFileValidar){
+        UIAlert.toast('Selecciona una imagen para la vacante.', 'warning');
         return;
     }
 
@@ -236,7 +257,7 @@ formVacante.addEventListener('submit', async (e) => {
     formData.append('estado',       mapaEstadoBD[estadoForm]);
     formData.append('icono',        document.getElementById('icono')?.value || 'work');
 
-    // ✅ Imagen: solo agrega si el usuario seleccionó un archivo nuevo
+
     const imgFile = document.getElementById('inputImagenPrincipal').files[0];
     if(imgFile) formData.append('imagen', imgFile);
 

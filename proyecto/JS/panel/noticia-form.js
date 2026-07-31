@@ -20,6 +20,28 @@ const galeriaExtra         = document.getElementById('galeriaExtra');
 const LOGO_DEFAULT = '../../img/logo_ci.png';
 const MAX_GALERIA  = 5;
 
+// ════════════════════════════════════════════════════════════
+//  VALIDACIÓN DE IMÁGENES
+// ════════════════════════════════════════════════════════════
+
+const TIPOS_IMAGEN_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
+const TAMANO_IMAGEN_MAXIMO    = 5 * 1024 * 1024; // 5 MB
+
+function validarImagenNoticia(file){
+    if(!TIPOS_IMAGEN_PERMITIDOS.includes(file.type)){
+        return 'Solo se permiten imágenes JPG, PNG o WEBP.';
+    }
+    if(file.size > TAMANO_IMAGEN_MAXIMO){
+        return 'La imagen no debe superar los 5 MB.';
+    }
+    return '';
+}
+
+function mostrarErrorImagenNoticia(msg){
+    if(typeof UIAlert !== 'undefined') UIAlert.toast(msg, 'error');
+    else alert(msg);
+}
+
 // ✅ Devuelve la fecha de HOY en hora local (YYYY-MM-DD), sin el
 // desfase de toISOString() (que convierte a UTC y puede saltar
 // al día siguiente o anterior según la hora y zona horaria).
@@ -49,6 +71,13 @@ imagenPrincipalBox.addEventListener('click', () => inputImagenPrincipal.click())
 inputImagenPrincipal.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if(!file) return;
+
+    const errorImg = validarImagenNoticia(file);
+    if(errorImg){
+        mostrarErrorImagenNoticia(errorImg);
+        e.target.value = '';
+        return;
+    }
 
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -82,7 +111,16 @@ inputGaleria.addEventListener('change', (e) => {
     const yaHay  = galeriaExtra.querySelectorAll('.galeria-item').length;
     const libres = MAX_GALERIA - yaHay;
 
+    if(nuevos.length > libres){
+        mostrarErrorImagenNoticia(`Solo puedes agregar hasta ${MAX_GALERIA} imágenes en total.`);
+    }
+
     nuevos.slice(0, libres).forEach(file => {
+        const errorImg = validarImagenNoticia(file);
+        if(errorImg){
+            mostrarErrorImagenNoticia(`${file.name}: ${errorImg}`);
+            return;
+        }
         const reader = new FileReader();
         reader.onload = (ev) => agregarMiniatura(file, ev.target.result);
         reader.readAsDataURL(file);
@@ -154,7 +192,7 @@ function actualizarPreview(){
     const fecha     = document.getElementById('fechaPublicacion')?.value || '';
     const contenido = document.getElementById('contenido')?.value || '';
 
-    // Imagen
+
     const imgBox    = imagenPrincipalBox.querySelector('img');
     const previewImg = document.getElementById('previewImg');
     if(previewImg){
@@ -166,7 +204,7 @@ function actualizarPreview(){
         }
     }
 
-    // Badge tipo
+
     const info       = TIPOS_BADGE[tipo] || TIPOS_BADGE.noticia;
     const badgeEl    = document.getElementById('previewBadge');
     if(badgeEl){
@@ -174,7 +212,7 @@ function actualizarPreview(){
         badgeEl.textContent = info.texto;
     }
 
-    // Fecha
+
     const fechaEl = document.getElementById('previewFecha');
     if(fechaEl){
         fechaEl.textContent = fecha
@@ -182,11 +220,11 @@ function actualizarPreview(){
             : '—';
     }
 
-    // Título
+
     const tituloEl = document.getElementById('previewTitulo');
     if(tituloEl) tituloEl.textContent = titulo || 'Título de la noticia';
 
-    // Contenido (extracto)
+
     const contenidoEl = document.getElementById('previewContenido');
     if(contenidoEl){
         const txt = contenido.trim();
@@ -196,7 +234,7 @@ function actualizarPreview(){
     }
 }
 
-// Listeners en tiempo real
+
 ['tipo','titulo','contenido'].forEach(id => {
     document.getElementById(id)?.addEventListener('input',  actualizarPreview);
     document.getElementById(id)?.addEventListener('change', actualizarPreview);
@@ -222,8 +260,7 @@ if(modoEditar){
     });
 } else {
     tituloForm.textContent = 'Agregar Noticia';
-    // Fecha de hoy por defecto — y bloqueada: no se permite una fecha
-    // distinta al día de publicación real al crear la noticia.
+
     const hoy = obtenerFechaLocal();
     const inputFecha = document.getElementById('fechaPublicacion');
     if(inputFecha){
@@ -239,40 +276,38 @@ if(modoEditar){
 // ════════════════════════════════════════════════════════════
 
 function cargarDatos(n){
-    // Campos de texto
+
     const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
     setVal('tipo',            n.tipo);
     setVal('titulo',          n.titulo);
     setVal('contenido',       n.contenido);
     setVal('categoria',       n.categoria);
 
-    // Fecha — se toma tal cual la guarda la BD (YYYY-MM-DD), sin pasar
-    // por new Date().toISOString() para evitar el desfase de UTC.
+
     if(n.fecha_publicacion){
         const f = document.getElementById('fechaPublicacion');
         if(f){
             const fechaOriginal = String(n.fecha_publicacion).split('T')[0];
             f.value = fechaOriginal;
-            // No se permite retroceder antes del día de publicación original,
-            // pero sí adelantarla (sin límite superior).
+
             f.min = fechaOriginal;
             f.removeAttribute('max');
         }
     }
 
-    // Estado: 'activo' u 'oculta'
+
     const radio = document.querySelector(`input[name="estado"][value="${n.estado || 'activo'}"]`);
     if(radio) radio.checked = true;
 
-    // Imagen principal
+
     if(n.imagen){
-        const img = document.createElement('img');
-        img.src   = `${API}/img/noticias/${n.imagen}`;
-        img.onerror = () => { img.src = LOGO_DEFAULT; };
+    const img = document.createElement('img');
+    img.src   = n.imagen;                                 
+    img.onerror = () => { img.src = LOGO_DEFAULT; };
         img.style.cssText = 'width:100%; height:100%; object-fit:cover;';
         imagenPrincipalBox.innerHTML = '';
         imagenPrincipalBox.appendChild(img);
-        // Vuelve a meter el input (lo necesita el listener)
+
         const inp = document.createElement('input');
         inp.type   = 'file';
         inp.id     = 'inputImagenPrincipal';
@@ -282,14 +317,13 @@ function cargarDatos(n){
         inp.addEventListener('change', inputImagenPrincipal.onchange || (() => {}));
     }
 
-    // Galería existente — muestra miniaturas con opción de eliminar
     if(Array.isArray(n.galeria)){
-        n.galeria.forEach(item => {
-            const src = `${API}/img/noticias/${item.imagen || item}`;
-            const idImg = item.id || null;
-            agregarMiniatura(null, src, idImg);
-        });
-    }
+    n.galeria.forEach(item => {
+        const src = item.imagen || item;
+        const idImg = item.id || null;
+        agregarMiniatura(null, src, idImg);
+    });
+}
 
     actualizarPreview();
 }
@@ -308,8 +342,35 @@ formNoticia.addEventListener('submit', async (e) => {
     const fecha     = document.getElementById('fechaPublicacion')?.value;
     const estado    = document.querySelector('input[name="estado"]:checked')?.value || 'activo';
 
-    if(!tipo || !categoria || !titulo || !contenido){
-        if(typeof UIAlert !== 'undefined') UIAlert.toast('Completa todos los campos obligatorios.', 'warning');
+    // ─── VALIDACIONES DE CAMPOS ──────────────────────────
+    if(!tipo){
+        if(typeof UIAlert !== 'undefined') UIAlert.toast('Selecciona el tipo de publicación.', 'warning');
+        return;
+    }
+
+    if(!categoria){
+        if(typeof UIAlert !== 'undefined') UIAlert.toast('Ingresa la categoría.', 'warning');
+        return;
+    }
+
+    if(!titulo || titulo.length < 5){
+        if(typeof UIAlert !== 'undefined') UIAlert.toast('El título debe tener al menos 5 caracteres.', 'warning');
+        return;
+    }
+
+    if(!contenido || contenido.length < 20){
+        if(typeof UIAlert !== 'undefined') UIAlert.toast('El contenido debe tener al menos 20 caracteres.', 'warning');
+        return;
+    }
+
+    if(!fecha){
+        if(typeof UIAlert !== 'undefined') UIAlert.toast('Selecciona la fecha de publicación.', 'warning');
+        return;
+    }
+
+    const imgPrincipalValidar = document.getElementById('inputImagenPrincipal')?.files[0];
+    if(!modoEditar && !imgPrincipalValidar){
+        if(typeof UIAlert !== 'undefined') UIAlert.toast('Selecciona una imagen principal.', 'warning');
         return;
     }
 
@@ -321,11 +382,11 @@ formNoticia.addEventListener('submit', async (e) => {
     formData.append('estado',           estado);
     formData.append('fecha_publicacion', fecha || obtenerFechaLocal());
 
-    // Imagen principal (si el usuario seleccionó una nueva)
+
     const inputImg = document.getElementById('inputImagenPrincipal');
     if(inputImg?.files[0]) formData.append('imagen', inputImg.files[0]);
 
-    // Imágenes de galería NUEVAS (las que tienen _file)
+
     galeriaExtra.querySelectorAll('.galeria-item img').forEach(img => {
         if(img._file) formData.append('galeria', img._file);
     });
@@ -345,9 +406,6 @@ formNoticia.addEventListener('submit', async (e) => {
 
         if(!res.ok) throw new Error(data.mensaje || `Error ${res.status}`);
 
-        // ✅ Solo ahora, con el guardado ya confirmado y exitoso,
-        // se eliminan del servidor las imágenes que el usuario marcó
-        // para quitar durante la edición.
         if(modoEditar && imagenesAEliminar.length > 0){
     await Promise.all(
         imagenesAEliminar.map(idImg =>

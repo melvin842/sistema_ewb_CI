@@ -1,17 +1,19 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors    = require('cors');
 const pool    = require('./db');
 const multer  = require('multer');
-const path    = require('path');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
 const fs      = require('fs');
-const bcrypt  = require('bcrypt');           // NUEVO
-const jwt     = require('jsonwebtoken');     // NUEVO
-const cookieParser = require('cookie-parser'); // NUEVO
+const path    = require('path');
+const bcrypt  = require('bcrypt');
+const jwt     = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
-// NUEVO — clave secreta para firmar los tokens.
-// En producción esto DEBE venir de una variable de entorno, nunca hardcodeada.
 const JWT_SECRET = process.env.JWT_SECRET || 'CAMBIA_ESTO_EN_.env';
 
 app.use(cors({
@@ -19,7 +21,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
-app.use(cookieParser()); // NUEVO
+app.use(cookieParser());
 
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
@@ -27,7 +29,7 @@ app.use((req, res, next) => {
 });
 
 // ════════════════════════════════════════════════════════════
-//  NUEVO — MIDDLEWARE DE AUTENTICACIÓN
+//  MIDDLEWARE DE AUTENTICACIÓN
 // ════════════════════════════════════════════════════════════
 
 function verificarSesion(req, res, next) {
@@ -43,7 +45,6 @@ function verificarSesion(req, res, next) {
     }
 }
 
-// Opcional — para rutas donde además del login exiges un rol específico
 function requiereRol(...rolesPermitidos) {
     return (req, res, next) => {
         if (!req.usuario || !rolesPermitidos.includes(req.usuario.rol)) {
@@ -56,30 +57,20 @@ function requiereRol(...rolesPermitidos) {
 // =========================
 //  RUTAS BASE
 // =========================
+// Solo los CVs se mantienen en disco local (son PDFs, fuera del alcance
+// de esta migración). Todo lo demás (productos, RH, noticias, perfil)
+// ahora vive en Cloudinary.
 
-const raiz            = path.join(__dirname, '..');
-const carpetaImg       = path.join(raiz, 'img', 'productos');
-const carpetaRH        = path.join(raiz, 'img', 'rh');
-const carpetaCVs       = path.join(raiz, 'CVs', 'recursos_humanos');
-const carpetaNoticias  = path.join(raiz, 'img', 'noticias');
-const carpetaPerfil    = path.join(raiz, 'img', 'perfil');
+const raiz       = path.join(__dirname, '..');
+const carpetaCVs = path.join(raiz, 'CVs', 'recursos_humanos');
 
-[carpetaImg, carpetaRH, carpetaCVs, carpetaNoticias, carpetaPerfil].forEach(c => {
-    if(!fs.existsSync(c)){
-        fs.mkdirSync(c, { recursive: true });
-        console.log('Carpeta creada:', c);
-    }
-});
+if (!fs.existsSync(carpetaCVs)) {
+    fs.mkdirSync(carpetaCVs, { recursive: true });
+    console.log('Carpeta creada:', carpetaCVs);
+}
 
-app.use('/img', express.static(path.join(raiz, 'img')));
-
-// NUEVO — sirve el frontend completo (HTML, CSS, JS, e imágenes estáticas
-// del sitio como logos/banners que viven en proyecto/img). Como proyecto/img
-// y el /img de arriba (uploads dinámicos) no comparten nombres de archivo,
-// ambos conviven bajo la misma ruta /img sin chocar.
 app.use(express.static(path.join(raiz, 'proyecto')));
 
-// Comodidad: al entrar a la raíz del sitio, redirige a la página de inicio real
 app.get('/', (req, res) => {
     res.redirect('/HTML/index.html');
 });
@@ -88,7 +79,7 @@ app.get('/', (req, res) => {
 //  ACTUALIZACIÓN AUTOMÁTICA DE ESTADO POR FECHA DE CIERRE
 // ════════════════════════════════════════════════════════════
 
-async function actualizarEstadosVacantes(){
+async function actualizarEstadosVacantes() {
     try {
         await pool.query(
             `UPDATE recursos_humanos
@@ -114,7 +105,7 @@ async function actualizarEstadosVacantes(){
                AND fecha_cierre > CURRENT_DATE + INTERVAL '7 days'
                AND estado = 'proxima'`
         );
-    } catch(error){
+    } catch (error) {
         console.error('Error al actualizar estados automáticos de vacantes:', error);
     }
 }
@@ -124,10 +115,10 @@ async function actualizarEstadosVacantes(){
 // ═════════════════════════════════════════════════════════════
 
 const handleMulterError = (err, req, res, next) => {
-    if(err && err.code === 'ABORTED'){
+    if (err && err.code === 'ABORTED') {
         return next();
     }
-    if(err){
+    if (err) {
         console.error('Error en multer:', err.message);
         return res.status(400).json({ success: false, mensaje: 'Error al procesar archivos' });
     }
@@ -135,13 +126,15 @@ const handleMulterError = (err, req, res, next) => {
 };
 
 // =========================
-//  MULTER — Perfil
+//  MULTER + CLOUDINARY — Perfil
 // =========================
 
-const storagePerfil = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, carpetaPerfil),
-    filename:    (req, file, cb) =>
-        cb(null, Date.now() + '_' + Math.random().toString(36).slice(2) + path.extname(file.originalname))
+const storagePerfil = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'proyecto-ci/perfil',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
+    }
 });
 
 const uploadPerfil = multer({
@@ -150,13 +143,15 @@ const uploadPerfil = multer({
 });
 
 // =========================
-//  MULTER — Productos
+//  MULTER + CLOUDINARY — Productos
 // =========================
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, carpetaImg),
-    filename:    (req, file, cb) =>
-        cb(null, Date.now() + '_' + Math.random().toString(36).slice(2) + path.extname(file.originalname))
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'proyecto-ci/productos',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
+    }
 });
 
 const upload = multer({
@@ -170,13 +165,15 @@ const uploadFields = upload.fields([
 ]);
 
 // =========================
-//  MULTER — Recursos Humanos
+//  MULTER + CLOUDINARY — Recursos Humanos
 // =========================
 
-const storageRH = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, carpetaRH),
-    filename:    (req, file, cb) =>
-        cb(null, Date.now() + '_' + Math.random().toString(36).slice(2) + path.extname(file.originalname))
+const storageRH = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'proyecto-ci/rh',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
+    }
 });
 
 const uploadRH = multer({
@@ -185,7 +182,7 @@ const uploadRH = multer({
 });
 
 // =========================
-//  MULTER — CVs
+//  MULTER — CVs (se queda en disco local, no se migra)
 // =========================
 
 const storageCV = multer.diskStorage({
@@ -197,20 +194,22 @@ const storageCV = multer.diskStorage({
 const uploadCV = multer({
     storage: storageCV,
     fileFilter: (req, file, cb) => {
-        if(path.extname(file.originalname).toLowerCase() === '.pdf') cb(null, true);
+        if (path.extname(file.originalname).toLowerCase() === '.pdf') cb(null, true);
         else cb(new Error('Solo se permiten archivos PDF'));
     },
     limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 // =========================
-//  MULTER — Noticias
+//  MULTER + CLOUDINARY — Noticias
 // =========================
 
-const storageNoticias = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, carpetaNoticias),
-    filename:    (req, file, cb) =>
-        cb(null, Date.now() + '_' + Math.random().toString(36).slice(2) + path.extname(file.originalname))
+const storageNoticias = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'proyecto-ci/noticias',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
+    }
 });
 
 const uploadNoticias = multer({
@@ -219,7 +218,7 @@ const uploadNoticias = multer({
 });
 
 // ════════════════════════════════════════════════════════════
-//  LOGIN — MODIFICADO: bcrypt + emite cookie httpOnly con JWT
+//  LOGIN
 // ════════════════════════════════════════════════════════════
 
 app.post('/login', async (req, res) => {
@@ -236,13 +235,11 @@ app.post('/login', async (req, res) => {
 
         const u = resultado.rows[0];
 
-        // NUEVO — comparación segura contra el hash guardado
         const coincide = await bcrypt.compare(contrasena, u.contrasena);
         if (!coincide) {
             return res.status(401).json({ success: false, mensaje: 'Correo o contraseña incorrectos' });
         }
 
-        // NUEVO — se firma un token y se manda como cookie httpOnly
         const token = jwt.sign(
             { id: u.id_usuario, rol: u.rol },
             JWT_SECRET,
@@ -253,8 +250,6 @@ app.post('/login', async (req, res) => {
             httpOnly: true,
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             secure: process.env.NODE_ENV === 'production'
-            // Sin maxAge/expires a propósito: así es una cookie "de sesión"
-            // que el navegador borra al cerrarse por completo.
         });
 
         res.json({
@@ -269,19 +264,17 @@ app.post('/login', async (req, res) => {
                 foto_perfil: u.foto_perfil
             }
         });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error del servidor' });
     }
 });
 
-// NUEVO — logout: borra la cookie
 app.post('/logout', (req, res) => {
     res.clearCookie('token');
     res.json({ success: true, mensaje: 'Sesión cerrada' });
 });
 
-// NUEVO — el frontend usa esto para saber si sigue logueado al cargar cualquier página
 app.get('/sesion', verificarSesion, (req, res) => {
     res.json({ success: true, usuario: req.usuario });
 });
@@ -294,7 +287,7 @@ app.get('/productos', async (req, res) => {
     try {
         const resultado = await pool.query(`SELECT * FROM productos ORDER BY id_producto ASC`);
         res.json(resultado.rows);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener productos' });
     }
@@ -304,13 +297,13 @@ app.get('/productos/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const prod = await pool.query(`SELECT * FROM productos WHERE id_producto = $1`, [id]);
-        if(prod.rows.length === 0)
+        if (prod.rows.length === 0)
             return res.status(404).json({ mensaje: 'Producto no encontrado' });
         const galeria = await pool.query(
             `SELECT id, imagen, descripcion FROM imagenes_producto WHERE id_producto = $1 ORDER BY id ASC`, [id]
         );
         res.json({ ...prod.rows[0], galeria: galeria.rows });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener producto' });
     }
@@ -318,24 +311,25 @@ app.get('/productos/:id', async (req, res) => {
 
 app.post('/productos', verificarSesion, uploadFields, handleMulterError, async (req, res) => {
     const { nombre, descripcion, descripcion_corta, tipo, estado, fecha } = req.body;
-    const imagenPrincipal = req.files['imagen']?.[0]?.filename || 'logo_ci.png';
+    const imagenPrincipal = req.files['imagen']?.[0]?.path     || 'logo_ci.png'; // URL de Cloudinary
+    const imagenPublicId  = req.files['imagen']?.[0]?.filename || null;         // public_id de Cloudinary
     const galeriaFiles    = req.files['galeria'] || [];
     try {
         const resultado = await pool.query(
-            `INSERT INTO productos (nombre, imagen, descripcion, descripcion_corta, tipo, estado, fecha)
-             VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-            [nombre, imagenPrincipal, descripcion, descripcion_corta || null, tipo, estado, fecha || null]
+            `INSERT INTO productos (nombre, imagen, imagen_public_id, descripcion, descripcion_corta, tipo, estado, fecha)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+            [nombre, imagenPrincipal, imagenPublicId, descripcion, descripcion_corta || null, tipo, estado, fecha || null]
         );
         const idNuevo = resultado.rows[0].id_producto;
-        for(let i = 0; i < galeriaFiles.length; i++){
+        for (let i = 0; i < galeriaFiles.length; i++) {
             const desc = req.body[`galeria_desc_${i}`] || '';
             await pool.query(
-                `INSERT INTO imagenes_producto (id_producto, imagen, descripcion) VALUES ($1,$2,$3)`,
-                [idNuevo, galeriaFiles[i].filename, desc]
+                `INSERT INTO imagenes_producto (id_producto, imagen, imagen_public_id, descripcion) VALUES ($1,$2,$3,$4)`,
+                [idNuevo, galeriaFiles[i].path, galeriaFiles[i].filename, desc]
             );
         }
         res.json({ success: true, producto: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al guardar producto', error: error.message });
     }
@@ -346,29 +340,41 @@ app.put('/productos/:id', verificarSesion, uploadFields, handleMulterError, asyn
     const { nombre, descripcion, descripcion_corta, tipo, estado } = req.body;
     const galeriaFiles = req.files['galeria'] || [];
     try {
-        let imagenFinal;
-        if(req.files['imagen']?.[0]){
-            imagenFinal = req.files['imagen'][0].filename;
+        let imagenFinal, imagenPublicIdFinal;
+
+        if (req.files['imagen']?.[0]) {
+            imagenFinal         = req.files['imagen'][0].path;
+            imagenPublicIdFinal = req.files['imagen'][0].filename;
+
+            const actualPrev = await pool.query(`SELECT imagen_public_id FROM productos WHERE id_producto = $1`, [id]);
+            if (actualPrev.rows[0]?.imagen_public_id) {
+                try { await cloudinary.uploader.destroy(actualPrev.rows[0].imagen_public_id); }
+                catch (e) { console.warn('No se pudo borrar imagen anterior de Cloudinary:', e.message); }
+            }
         } else {
-            const actual = await pool.query(`SELECT imagen FROM productos WHERE id_producto = $1`, [id]);
-            imagenFinal  = actual.rows[0]?.imagen || 'logo_ci.png';
+            const actual = await pool.query(`SELECT imagen, imagen_public_id FROM productos WHERE id_producto = $1`, [id]);
+            imagenFinal         = actual.rows[0]?.imagen || 'logo_ci.png';
+            imagenPublicIdFinal = actual.rows[0]?.imagen_public_id || null;
         }
+
         const resultado = await pool.query(
-            `UPDATE productos SET nombre=$1,descripcion=$2,descripcion_corta=$3,tipo=$4,estado=$5,imagen=$6
-             WHERE id_producto=$7 RETURNING *`,
-            [nombre, descripcion, descripcion_corta || null, tipo, estado, imagenFinal, id]
+            `UPDATE productos SET nombre=$1,descripcion=$2,descripcion_corta=$3,tipo=$4,estado=$5,imagen=$6,imagen_public_id=$7
+             WHERE id_producto=$8 RETURNING *`,
+            [nombre, descripcion, descripcion_corta || null, tipo, estado, imagenFinal, imagenPublicIdFinal, id]
         );
-        if(resultado.rows.length === 0)
+
+        if (resultado.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Producto no encontrado' });
-        for(let i = 0; i < galeriaFiles.length; i++){
+
+        for (let i = 0; i < galeriaFiles.length; i++) {
             const desc = req.body[`galeria_desc_${i}`] || '';
             await pool.query(
-                `INSERT INTO imagenes_producto (id_producto, imagen, descripcion) VALUES ($1,$2,$3)`,
-                [id, galeriaFiles[i].filename, desc]
+                `INSERT INTO imagenes_producto (id_producto, imagen, imagen_public_id, descripcion) VALUES ($1,$2,$3,$4)`,
+                [id, galeriaFiles[i].path, galeriaFiles[i].filename, desc]
             );
         }
         res.json({ success: true, producto: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar producto', error: error.message });
     }
@@ -382,10 +388,10 @@ app.put('/productos/galeria/:idImagen', verificarSesion, async (req, res) => {
             `UPDATE imagenes_producto SET descripcion = $1 WHERE id = $2 RETURNING *`,
             [descripcion || '', idImagen]
         );
-        if(resultado.rows.length === 0)
+        if (resultado.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Imagen no encontrada' });
         res.json({ success: true, imagen: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar descripción de la imagen' });
     }
@@ -394,14 +400,22 @@ app.put('/productos/galeria/:idImagen', verificarSesion, async (req, res) => {
 app.delete('/productos/galeria/:idImagen', verificarSesion, async (req, res) => {
     const { idImagen } = req.params;
     try {
-        const img = await pool.query(`SELECT imagen FROM imagenes_producto WHERE id = $1`, [idImagen]);
-        if(img.rows.length === 0)
+        const img = await pool.query(`SELECT imagen_public_id FROM imagenes_producto WHERE id = $1`, [idImagen]);
+        if (img.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Imagen no encontrada' });
+
         await pool.query(`DELETE FROM imagenes_producto WHERE id = $1`, [idImagen]);
-        const rutaArchivo = path.join(carpetaImg, img.rows[0].imagen);
-        if(fs.existsSync(rutaArchivo)) fs.unlinkSync(rutaArchivo);
+
+        if (img.rows[0].imagen_public_id) {
+            try {
+                await cloudinary.uploader.destroy(img.rows[0].imagen_public_id);
+            } catch (errCloud) {
+                console.warn('No se pudo eliminar la imagen de Cloudinary:', errCloud.message);
+            }
+        }
+
         res.json({ success: true, mensaje: 'Imagen eliminada' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar imagen' });
     }
@@ -412,7 +426,7 @@ app.delete('/productos/:id', verificarSesion, async (req, res) => {
     try {
         await pool.query(`DELETE FROM productos WHERE id_producto = $1`, [id]);
         res.json({ success: true, mensaje: 'Producto eliminado' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar producto' });
     }
@@ -429,7 +443,7 @@ app.get('/recursos-humanos', async (req, res) => {
             `SELECT * FROM recursos_humanos ORDER BY fecha_publicacion DESC`
         );
         res.json(resultado.rows);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener vacantes' });
     }
@@ -442,10 +456,10 @@ app.get('/recursos-humanos/:id', async (req, res) => {
         const resultado = await pool.query(
             `SELECT * FROM recursos_humanos WHERE id_rh = $1`, [id]
         );
-        if(resultado.rows.length === 0)
+        if (resultado.rows.length === 0)
             return res.status(404).json({ mensaje: 'Vacante no encontrada' });
         res.json(resultado.rows[0]);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener vacante' });
     }
@@ -454,23 +468,24 @@ app.get('/recursos-humanos/:id', async (req, res) => {
 app.post('/recursos-humanos', verificarSesion, uploadRH.single('imagen'), handleMulterError, async (req, res) => {
     const { titulo, descripcion, requisitos, ofrecemos,
             horario, salario, fecha_cierre, estado, icono } = req.body;
-    const imagen = req.file?.filename || null;
+    const imagen         = req.file?.path     || null; // URL de Cloudinary
+    const imagenPublicId = req.file?.filename || null; // public_id
 
     try {
         const resultado = await pool.query(
             `INSERT INTO recursos_humanos
              (titulo, descripcion, requisitos, ofrecemos, horario, salario,
-              fecha_cierre, estado, icono, imagen)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+              fecha_cierre, estado, icono, imagen, imagen_public_id)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
             [titulo, descripcion, requisitos || null, ofrecemos || null,
              horario || null, salario || null,
              fecha_cierre || null,
              estado || 'disponible',
              icono  || 'work',
-             imagen]
+             imagen, imagenPublicId]
         );
         res.json({ success: true, vacante: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al crear vacante', error: error.message });
     }
@@ -482,35 +497,46 @@ app.put('/recursos-humanos/:id', verificarSesion, uploadRH.single('imagen'), han
             horario, salario, fecha_cierre, estado, icono } = req.body;
 
     try {
-        let imagenFinal = null;
-        if(req.file){
-            imagenFinal = req.file.filename;
+        let imagenFinal, imagenPublicIdFinal;
+
+        if (req.file) {
+            imagenFinal         = req.file.path;
+            imagenPublicIdFinal = req.file.filename;
+
+            const actualPrev = await pool.query(
+                `SELECT imagen_public_id FROM recursos_humanos WHERE id_rh = $1`, [id]
+            );
+            if (actualPrev.rows[0]?.imagen_public_id) {
+                try { await cloudinary.uploader.destroy(actualPrev.rows[0].imagen_public_id); }
+                catch (e) { console.warn('No se pudo borrar imagen anterior de Cloudinary:', e.message); }
+            }
         } else {
             const actual = await pool.query(
-                `SELECT imagen FROM recursos_humanos WHERE id_rh = $1`, [id]
+                `SELECT imagen, imagen_public_id FROM recursos_humanos WHERE id_rh = $1`, [id]
             );
-            imagenFinal = actual.rows[0]?.imagen || null;
+            imagenFinal         = actual.rows[0]?.imagen || null;
+            imagenPublicIdFinal = actual.rows[0]?.imagen_public_id || null;
         }
 
         const resultado = await pool.query(
             `UPDATE recursos_humanos
              SET titulo=$1, descripcion=$2, requisitos=$3, ofrecemos=$4,
                  horario=$5, salario=$6, fecha_cierre=$7, estado=$8,
-                 icono=$9, imagen=$10
-             WHERE id_rh=$11 RETURNING *`,
+                 icono=$9, imagen=$10, imagen_public_id=$11
+             WHERE id_rh=$12 RETURNING *`,
             [titulo, descripcion, requisitos || null, ofrecemos || null,
              horario || null, salario || null,
              fecha_cierre || null,
              estado || 'disponible',
              icono  || 'work',
-             imagenFinal, id]
+             imagenFinal, imagenPublicIdFinal, id]
         );
 
-        if(resultado.rows.length === 0)
+        if (resultado.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Vacante no encontrada' });
 
         res.json({ success: true, vacante: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar vacante', error: error.message });
     }
@@ -521,7 +547,7 @@ app.delete('/recursos-humanos/:id', verificarSesion, async (req, res) => {
     try {
         await pool.query(`DELETE FROM recursos_humanos WHERE id_rh = $1`, [id]);
         res.json({ success: true, mensaje: 'Vacante eliminada' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar vacante' });
     }
@@ -531,8 +557,8 @@ actualizarEstadosVacantes();
 setInterval(actualizarEstadosVacantes, 60 * 60 * 1000);
 
 // ════════════════════════════════════════════════════════════
-//  POSTULACIONES — el envío es público (lo hace un candidato externo),
-//  pero listar/gestionar/borrar SÍ se protege
+//  POSTULACIONES — el envío es público, gestión protegida
+//  (los CVs se quedan en disco local, sin cambios de Cloudinary)
 // ════════════════════════════════════════════════════════════
 
 app.get('/postulaciones', verificarSesion, async (req, res) => {
@@ -544,7 +570,7 @@ app.get('/postulaciones', verificarSesion, async (req, res) => {
             ORDER BY p.fecha_postulacion DESC`
         );
         res.json(resultado.rows);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener postulaciones' });
     }
@@ -552,9 +578,9 @@ app.get('/postulaciones', verificarSesion, async (req, res) => {
 
 app.post('/postulaciones', uploadCV.single('cv'), handleMulterError, async (req, res) => {
     const { nombre, correo, telefono, id_rh } = req.body;
-    if(!nombre || !correo || !id_rh)
+    if (!nombre || !correo || !id_rh)
         return res.status(400).json({ success: false, mensaje: 'Faltan campos obligatorios.' });
-    if(!req.file)
+    if (!req.file)
         return res.status(400).json({ success: false, mensaje: 'Debe adjuntar un CV en PDF.' });
     try {
         const resultado = await pool.query(
@@ -563,7 +589,7 @@ app.post('/postulaciones', uploadCV.single('cv'), handleMulterError, async (req,
             [nombre, correo, telefono || null, req.file.filename, id_rh]
         );
         res.json({ success: true, postulacion: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al guardar la postulación.' });
     }
@@ -573,17 +599,17 @@ app.put('/postulaciones/:id/estado', verificarSesion, async (req, res) => {
     const { id }     = req.params;
     const { estado } = req.body;
     const validos    = ['pendiente', 'revisado', 'aceptado', 'rechazado'];
-    if(!validos.includes(estado))
+    if (!validos.includes(estado))
         return res.status(400).json({ success: false, mensaje: 'Estado no válido.' });
     try {
         const resultado = await pool.query(
             `UPDATE postulaciones SET estado=$1 WHERE id_postulacion=$2 RETURNING *`,
             [estado, id]
         );
-        if(resultado.rows.length === 0)
+        if (resultado.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Postulación no encontrada.' });
         res.json({ success: true, postulacion: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar estado.' });
     }
@@ -595,24 +621,22 @@ app.delete('/postulaciones/:id', verificarSesion, async (req, res) => {
         const post = await pool.query(
             `SELECT cv FROM postulaciones WHERE id_postulacion=$1`, [id]
         );
-        if(post.rows.length === 0)
+        if (post.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Postulación no encontrada.' });
         await pool.query(`DELETE FROM postulaciones WHERE id_postulacion=$1`, [id]);
         const rutaCV = path.join(carpetaCVs, post.rows[0].cv);
-        if(fs.existsSync(rutaCV)) fs.unlinkSync(rutaCV);
+        if (fs.existsSync(rutaCV)) fs.unlinkSync(rutaCV);
         res.json({ success: true, mensaje: 'Postulación eliminada.' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar postulación.' });
     }
 });
 
-// NUEVO — protegida: los CVs son datos personales de candidatos, no deben
-// poder descargarse solo con adivinar el nombre del archivo
 app.get('/cvs/:archivo', verificarSesion, (req, res) => {
     const nombreArchivo = decodeURIComponent(req.params.archivo);
     const rutaCV = path.join(carpetaCVs, nombreArchivo);
-    if(!fs.existsSync(rutaCV))
+    if (!fs.existsSync(rutaCV))
         return res.status(404).json({ mensaje: 'Archivo no encontrado.' });
     res.download(rutaCV, nombreArchivo);
 });
@@ -638,7 +662,7 @@ app.get('/noticias', async (req, res) => {
         );
 
         res.json(noticiasConGaleria);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener noticias' });
     }
@@ -650,7 +674,7 @@ app.get('/noticias/:id', async (req, res) => {
         const noticia = await pool.query(
             `SELECT * FROM noticias WHERE id_noticia = $1`, [id]
         );
-        if(noticia.rows.length === 0)
+        if (noticia.rows.length === 0)
             return res.status(404).json({ mensaje: 'Noticia no encontrada' });
 
         const galeria = await pool.query(
@@ -658,7 +682,7 @@ app.get('/noticias/:id', async (req, res) => {
         );
 
         res.json({ ...noticia.rows[0], galeria: galeria.rows });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener noticia' });
     }
@@ -669,33 +693,35 @@ app.post('/noticias', verificarSesion, uploadNoticias.fields([
     { name: 'galeria', maxCount: 5 }
 ]), handleMulterError, async (req, res) => {
     const { tipo, categoria, titulo, contenido, estado, fecha_publicacion } = req.body;
-    const imagen = req.files['imagen']?.[0]?.filename || null;
-    const galeriaFiles = req.files['galeria'] || [];
+    const imagen         = req.files['imagen']?.[0]?.path     || null; // URL de Cloudinary
+    const imagenPublicId = req.files['imagen']?.[0]?.filename || null; // public_id
+    const galeriaFiles   = req.files['galeria'] || [];
 
     try {
-        if(!tipo || !categoria || !titulo || !contenido){
+        if (!tipo || !categoria || !titulo || !contenido) {
             return res.status(400).json({ success: false, mensaje: 'Faltan campos obligatorios' });
         }
 
         const resultado = await pool.query(
             `INSERT INTO noticias
-            (tipo, categoria, titulo, contenido, estado, imagen, fecha_publicacion)
-             VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-            [tipo, categoria, titulo, contenido, estado || 'activo', imagen, fecha_publicacion || new Date().toISOString().split('T')[0]]
+            (tipo, categoria, titulo, contenido, estado, imagen, imagen_public_id, fecha_publicacion)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+            [tipo, categoria, titulo, contenido, estado || 'activo', imagen, imagenPublicId,
+             fecha_publicacion || new Date().toISOString().split('T')[0]]
         );
 
         const idNuevo = resultado.rows[0].id_noticia;
 
-        for(let i = 0; i < galeriaFiles.length; i++){
+        for (let i = 0; i < galeriaFiles.length; i++) {
             await pool.query(
-                `INSERT INTO imagenes_noticia (id_noticia, imagen) VALUES ($1,$2)`,
-                [idNuevo, galeriaFiles[i].filename]
+                `INSERT INTO imagenes_noticia (id_noticia, imagen, imagen_public_id) VALUES ($1,$2,$3)`,
+                [idNuevo, galeriaFiles[i].path, galeriaFiles[i].filename]
             );
         }
 
         res.json({ success: true, noticia: resultado.rows[0] });
 
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al crear noticia', error: error.message });
     }
@@ -710,36 +736,47 @@ app.put('/noticias/:id', verificarSesion, uploadNoticias.fields([
     const galeriaFiles = req.files['galeria'] || [];
 
     try {
-        let imagenFinal = null;
-        if(req.files['imagen']?.[0]){
-            imagenFinal = req.files['imagen'][0].filename;
+        let imagenFinal, imagenPublicIdFinal;
+
+        if (req.files['imagen']?.[0]) {
+            imagenFinal         = req.files['imagen'][0].path;
+            imagenPublicIdFinal = req.files['imagen'][0].filename;
+
+            const actualPrev = await pool.query(
+                `SELECT imagen_public_id FROM noticias WHERE id_noticia = $1`, [id]
+            );
+            if (actualPrev.rows[0]?.imagen_public_id) {
+                try { await cloudinary.uploader.destroy(actualPrev.rows[0].imagen_public_id); }
+                catch (e) { console.warn('No se pudo borrar imagen anterior de Cloudinary:', e.message); }
+            }
         } else {
             const actual = await pool.query(
-                `SELECT imagen FROM noticias WHERE id_noticia = $1`, [id]
+                `SELECT imagen, imagen_public_id FROM noticias WHERE id_noticia = $1`, [id]
             );
-            imagenFinal = actual.rows[0]?.imagen || null;
+            imagenFinal         = actual.rows[0]?.imagen || null;
+            imagenPublicIdFinal = actual.rows[0]?.imagen_public_id || null;
         }
 
         const resultado = await pool.query(
             `UPDATE noticias
-             SET tipo=$1, categoria=$2, titulo=$3, contenido=$4, estado=$5, imagen=$6, fecha_publicacion=$7
-             WHERE id_noticia=$8 RETURNING *`,
-            [tipo, categoria, titulo, contenido, estado || 'activo', imagenFinal, fecha_publicacion, id]
+             SET tipo=$1, categoria=$2, titulo=$3, contenido=$4, estado=$5, imagen=$6, imagen_public_id=$7, fecha_publicacion=$8
+             WHERE id_noticia=$9 RETURNING *`,
+            [tipo, categoria, titulo, contenido, estado || 'activo', imagenFinal, imagenPublicIdFinal, fecha_publicacion, id]
         );
 
-        if(resultado.rows.length === 0)
+        if (resultado.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Noticia no encontrada' });
 
-        for(let i = 0; i < galeriaFiles.length; i++){
+        for (let i = 0; i < galeriaFiles.length; i++) {
             await pool.query(
-                `INSERT INTO imagenes_noticia (id_noticia, imagen) VALUES ($1,$2)`,
-                [id, galeriaFiles[i].filename]
+                `INSERT INTO imagenes_noticia (id_noticia, imagen, imagen_public_id) VALUES ($1,$2,$3)`,
+                [id, galeriaFiles[i].path, galeriaFiles[i].filename]
             );
         }
 
         res.json({ success: true, noticia: resultado.rows[0] });
 
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar noticia', error: error.message });
     }
@@ -750,7 +787,7 @@ app.delete('/noticias/:id', verificarSesion, async (req, res) => {
     try {
         await pool.query(`DELETE FROM noticias WHERE id_noticia = $1`, [id]);
         res.json({ success: true, mensaje: 'Noticia eliminada' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar noticia' });
     }
@@ -760,19 +797,24 @@ app.delete('/noticias/:idNoticia/galeria/:idImagen', verificarSesion, async (req
     const { idNoticia, idImagen } = req.params;
     try {
         const img = await pool.query(
-            `SELECT imagen FROM imagenes_noticia WHERE id = $1 AND id_noticia = $2`,
+            `SELECT imagen_public_id FROM imagenes_noticia WHERE id = $1 AND id_noticia = $2`,
             [idImagen, idNoticia]
         );
-        if(img.rows.length === 0)
+        if (img.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Imagen no encontrada' });
 
         await pool.query(`DELETE FROM imagenes_noticia WHERE id = $1`, [idImagen]);
 
-        const rutaArchivo = path.join(carpetaNoticias, img.rows[0].imagen);
-        if(fs.existsSync(rutaArchivo)) fs.unlinkSync(rutaArchivo);
+        if (img.rows[0].imagen_public_id) {
+            try {
+                await cloudinary.uploader.destroy(img.rows[0].imagen_public_id);
+            } catch (errCloud) {
+                console.warn('No se pudo eliminar la imagen de Cloudinary:', errCloud.message);
+            }
+        }
 
         res.json({ success: true, mensaje: 'Imagen eliminada' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar imagen' });
     }
@@ -788,7 +830,7 @@ app.get('/sugerencias', verificarSesion, async (req, res) => {
            `SELECT * FROM sugerencias ORDER BY fecha_envio DESC`
         );
         res.json(resultado.rows);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener sugerencias' });
     }
@@ -797,7 +839,7 @@ app.get('/sugerencias', verificarSesion, async (req, res) => {
 app.get('/sugerencias/estado/:estado', verificarSesion, async (req, res) => {
     const { estado } = req.params;
     const validos = ['pendiente', 'revisada'];
-    if(!validos.includes(estado))
+    if (!validos.includes(estado))
         return res.status(400).json({ success: false, mensaje: 'Estado no válido' });
     try {
         const resultado = await pool.query(
@@ -805,7 +847,7 @@ app.get('/sugerencias/estado/:estado', verificarSesion, async (req, res) => {
             [estado]
         );
         res.json(resultado.rows);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener sugerencias' });
     }
@@ -815,7 +857,7 @@ app.post('/sugerencias', async (req, res) => {
     const { nombre, correo, asunto, mensaje } = req.body;
 
     try {
-        if(!nombre || !correo || !asunto || !mensaje){
+        if (!nombre || !correo || !asunto || !mensaje) {
             return res.status(400).json({ success: false, mensaje: 'Faltan campos obligatorios' });
         }
 
@@ -826,7 +868,7 @@ app.post('/sugerencias', async (req, res) => {
         );
 
         res.json({ success: true, sugerencia: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al guardar sugerencia' });
     }
@@ -841,12 +883,12 @@ app.patch('/sugerencias/:id/revisar', verificarSesion, async (req, res) => {
             [id]
         );
 
-        if(resultado.rows.length === 0){
+        if (resultado.rows.length === 0) {
             return res.status(404).json({ success: false, mensaje: 'Sugerencia no encontrada' });
         }
 
         res.json({ success: true, sugerencia: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar sugerencia' });
     }
@@ -861,12 +903,12 @@ app.delete('/sugerencias/:id', verificarSesion, async (req, res) => {
             [id]
         );
 
-        if(resultado.rows.length === 0){
+        if (resultado.rows.length === 0) {
             return res.status(404).json({ success: false, mensaje: 'Sugerencia no encontrada' });
         }
 
         res.json({ success: true, mensaje: 'Sugerencia eliminada' });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al eliminar sugerencia' });
     }
@@ -884,10 +926,10 @@ app.get('/usuario/:id', verificarSesion, async (req, res) => {
              FROM usuario WHERE id_usuario = $1`,
             [id]
         );
-        if(resultado.rows.length === 0)
+        if (resultado.rows.length === 0)
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         res.json(resultado.rows[0]);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al obtener usuario' });
     }
@@ -899,23 +941,29 @@ app.put('/usuario/:id', verificarSesion, uploadPerfil.single('foto_perfil'), han
 
     try {
         const actual = await pool.query(`SELECT * FROM usuario WHERE id_usuario = $1`, [id]);
-        if(actual.rows.length === 0)
+        if (actual.rows.length === 0)
             return res.status(404).json({ success: false, mensaje: 'Usuario no encontrado' });
 
-        let fotoFinal = actual.rows[0].foto_perfil;
-        if(req.file){
-            fotoFinal = req.file.filename;
-            if(actual.rows[0].foto_perfil){
-                const rutaAnterior = path.join(carpetaPerfil, actual.rows[0].foto_perfil);
-                if(fs.existsSync(rutaAnterior)) fs.unlinkSync(rutaAnterior);
+        let fotoFinal         = actual.rows[0].foto_perfil;
+        let fotoPublicIdFinal = actual.rows[0].foto_perfil_public_id;
+
+        if (req.file) {
+            fotoFinal         = req.file.path;     // URL de Cloudinary
+            fotoPublicIdFinal = req.file.filename; // public_id
+
+            if (actual.rows[0].foto_perfil_public_id) {
+                try {
+                    await cloudinary.uploader.destroy(actual.rows[0].foto_perfil_public_id);
+                } catch (errCloud) {
+                    console.warn('No se pudo eliminar la foto anterior de Cloudinary:', errCloud.message);
+                }
             }
         }
 
-        // MODIFICADO — comparación y hash con bcrypt en vez de texto plano
         let nuevaContrasena = actual.rows[0].contrasena;
-        if(contrasena_nueva){
+        if (contrasena_nueva) {
             const coincideActual = await bcrypt.compare(contrasena_actual || '', actual.rows[0].contrasena);
-            if(!coincideActual){
+            if (!coincideActual) {
                 return res.status(401).json({ success: false, mensaje: 'La contraseña actual no es correcta' });
             }
             nuevaContrasena = await bcrypt.hash(contrasena_nueva, 10);
@@ -923,24 +971,23 @@ app.put('/usuario/:id', verificarSesion, uploadPerfil.single('foto_perfil'), han
 
         const resultado = await pool.query(
             `UPDATE usuario
-             SET nombre_completo = $1, correo = $2, foto_perfil = $3, contrasena = $4
-             WHERE id_usuario = $5
+             SET nombre_completo = $1, correo = $2, foto_perfil = $3, foto_perfil_public_id = $4, contrasena = $5
+             WHERE id_usuario = $6
              RETURNING id_usuario, nombre, correo, rol, nombre_completo, foto_perfil`,
-            [nombre_completo, correo, fotoFinal, nuevaContrasena, id]
+            [nombre_completo, correo, fotoFinal, fotoPublicIdFinal, nuevaContrasena, id]
         );
 
         res.json({ success: true, usuario: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, mensaje: 'Error al actualizar perfil', error: error.message });
     }
 });
 
-// MODIFICADO — protegido + exige rol administrador + hashea la contraseña nueva
 app.post('/usuario', verificarSesion, requiereRol('administrador'), async (req, res) => {
     const { nombre, correo, contrasena, nombre_completo, rol } = req.body;
 
-    if(!nombre || !correo || !contrasena || !nombre_completo){
+    if (!nombre || !correo || !contrasena || !nombre_completo) {
         return res.status(400).json({ success: false, mensaje: 'Faltan campos obligatorios' });
     }
 
@@ -953,9 +1000,9 @@ app.post('/usuario', verificarSesion, requiereRol('administrador'), async (req, 
             [nombre, correo, hash, nombre_completo, rol || 'editor']
         );
         res.json({ success: true, usuario: resultado.rows[0] });
-    } catch(error){
+    } catch (error) {
         console.error(error);
-        if(error.code === '23505'){
+        if (error.code === '23505') {
             return res.status(409).json({ success: false, mensaje: 'Ese nombre de usuario o correo ya existe' });
         }
         res.status(500).json({ success: false, mensaje: 'Error al crear usuario', error: error.message });
@@ -969,9 +1016,6 @@ app.post('/usuario', verificarSesion, requiereRol('administrador'), async (req, 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('Servidor ejecutándose en puerto', PORT);
-    console.log('Productos:', carpetaImg);
-    console.log('RH:', carpetaRH);
     console.log('CVs:', carpetaCVs);
-    console.log('Noticias:', carpetaNoticias);
-    console.log('Perfil:', carpetaPerfil);
+    console.log('Imágenes (productos/RH/noticias/perfil): Cloudinary');
 });
