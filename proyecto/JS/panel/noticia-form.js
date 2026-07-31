@@ -22,20 +22,12 @@ const MAX_GALERIA  = 5;
 
 // ════════════════════════════════════════════════════════════
 //  VALIDACIÓN DE IMÁGENES
+//  ✅ Se eliminó la declaración duplicada de TIPOS_IMAGEN_PERMITIDOS,
+//  TAMANO_IMAGEN_MAXIMO y validarImagenNoticia() — ya existen en
+//  form-utils.js (como TIPOS_IMAGEN_PERMITIDOS, TAMANO_IMAGEN_MAXIMO
+//  y validarImagen()), que se carga antes que este archivo en el HTML.
+//  Reutilizamos esas mismas funciones/constantes en vez de redeclararlas.
 // ════════════════════════════════════════════════════════════
-
-const TIPOS_IMAGEN_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
-const TAMANO_IMAGEN_MAXIMO    = 5 * 1024 * 1024; // 5 MB
-
-function validarImagenNoticia(file){
-    if(!TIPOS_IMAGEN_PERMITIDOS.includes(file.type)){
-        return 'Solo se permiten imágenes JPG, PNG o WEBP.';
-    }
-    if(file.size > TAMANO_IMAGEN_MAXIMO){
-        return 'La imagen no debe superar los 5 MB.';
-    }
-    return '';
-}
 
 function mostrarErrorImagenNoticia(msg){
     if(typeof UIAlert !== 'undefined') UIAlert.toast(msg, 'error');
@@ -72,7 +64,7 @@ inputImagenPrincipal.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if(!file) return;
 
-    const errorImg = validarImagenNoticia(file);
+    const errorImg = validarImagen(file);
     if(errorImg){
         mostrarErrorImagenNoticia(errorImg);
         e.target.value = '';
@@ -116,7 +108,7 @@ inputGaleria.addEventListener('change', (e) => {
     }
 
     nuevos.slice(0, libres).forEach(file => {
-        const errorImg = validarImagenNoticia(file);
+        const errorImg = validarImagen(file);
         if(errorImg){
             mostrarErrorImagenNoticia(`${file.name}: ${errorImg}`);
             return;
