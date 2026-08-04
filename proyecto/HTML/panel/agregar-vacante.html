@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Agregar Vacante | Panel Administrativo</title>
+
+    <link rel="icon" href="../../img/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="../../img/favicon/favicon-192x192.png">
 
     <link rel="stylesheet" href="../../CSS/panel/perfil-menu.css">
     <link rel="stylesheet" href="../../CSS/panel/sidebar.css">
@@ -79,12 +84,6 @@
 
         <form class="form-container" id="formVacante">
 
-            <!--
-                LAYOUT:
-                col 1 (220px) → Vista Previa  (abarca 2 filas)
-                col 2 (resto) → fila 1: Imagen + Ícono
-                                fila 2: Campos del formulario
-            -->
             <div class="form-grid vacante-grid">
 
                 <!-- ── VISTA PREVIA ── col 1, filas 1-2 ── -->
@@ -171,11 +170,28 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label for="horario">Horario</label>
-                            <input type="text" id="horario" maxlength="60" placeholder="Ej. Rotativo">
-                        </div>
+                    <div class="input-group">
+    <label for="horario">Horario</label>
+
+    <div class="horario-quick">
+        <select id="horarioDias">
+            <option value="">Días...</option>
+            <option value="Lunes a viernes">Lunes a viernes</option>
+            <option value="Lunes a sábado">Lunes a sábado</option>
+            <option value="Todos los días">Todos los días</option>
+            <option value="Fines de semana">Fines de semana</option>
+            <option value="Turno rotativo">Turno rotativo</option>
+        </select>
+        <input type="time" id="horarioInicio">
+        <span class="horario-separador">a</span>
+        <input type="time" id="horarioFin">
+        <button type="button" id="btnAplicarHorario" class="btn-mini-aplicar">Aplicar</button>
+    </div>
+
+    <input type="text" id="horario" maxlength="100" placeholder="Ej. Lunes a sábado 8:00 AM - 5:00 PM">
+    <span class="hint">Elige días y horas, luego presiona "Aplicar" — o escribe directamente si prefieres.</span>
+</div>
+
                         <div class="input-group">
                             <label for="salario">Salario</label>
                             <input type="text" id="salario" maxlength="40" placeholder="Ej. $12,000 MXN">

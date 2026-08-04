@@ -36,6 +36,41 @@ initImagenPrincipal('imagenPrincipal', 'inputImagenPrincipal', (src) => {
 })();
 
 // ════════════════════════════════════════════════════════════
+//  CONSTRUCTOR RÁPIDO DE HORARIO
+// ════════════════════════════════════════════════════════════
+
+function formatoHora12(hora24){
+    const [h, m] = hora24.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12  = h % 12 === 0 ? 12 : h % 12;
+    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
+const btnAplicarHorario = document.getElementById('btnAplicarHorario');
+if(btnAplicarHorario){
+    btnAplicarHorario.addEventListener('click', () => {
+        const dias   = document.getElementById('horarioDias').value;
+        const inicio = document.getElementById('horarioInicio').value;
+        const fin    = document.getElementById('horarioFin').value;
+
+        if(!dias && !inicio && !fin){
+            UIAlert.toast('Selecciona al menos los días o el horario.', 'warning');
+            return;
+        }
+
+        let texto = dias || '';
+
+        if(dias !== 'Turno rotativo' && inicio && fin){
+            texto += (texto ? ' ' : '') + `${formatoHora12(inicio)} - ${formatoHora12(fin)}`;
+        }
+
+        const inputHorario = document.getElementById('horario');
+        inputHorario.value = texto.trim();
+        actualizarPreview();
+    });
+}
+
+// ════════════════════════════════════════════════════════════
 //  ESTADO AUTOMÁTICO POR FECHA
 // ════════════════════════════════════════════════════════════
 

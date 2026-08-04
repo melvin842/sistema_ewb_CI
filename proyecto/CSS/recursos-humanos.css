@@ -396,6 +396,7 @@ body{
     border-radius: 20px;
     box-shadow: 0 5px 15px #00000010;
     transition: .3s;
+    overflow: hidden;
 }
 
 .vacancy-card:hover{
@@ -405,12 +406,16 @@ body{
 .vacancy-card h3{
     color: #026432;
     margin-bottom: 15px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .vacancy-card p{
     color: #000000;
     line-height: 1.7;
     margin-bottom: 10px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .vacancy-note{
@@ -676,6 +681,8 @@ body{
     color: #444;
     line-height: 1.8;
     white-space: pre-line;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .rh-estado{
@@ -1456,9 +1463,12 @@ body{
         border-radius: 22px 22px 0 0;
     }
 
-    .modal-rh-info {
-        padding: 22px 20px;
-    }
+    .modal-rh-info{
+    padding: 25px;
+    text-align: center;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
 
     .modal-rh-info h2 {
         font-size: 20px;
